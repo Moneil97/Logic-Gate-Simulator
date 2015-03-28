@@ -1,0 +1,3 @@
+AND_Gate: http://www.clker.com/clipart-and-gate.html
+OR_Gate: http://www.clker.com/clipart-or-gate.html
+NOT_Gate: http://www.clker.com/clipart-not-gate.html
