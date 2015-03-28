@@ -1,13 +1,17 @@
+import javax.swing.JFrame;
 
-public class Simulator {
 
+@SuppressWarnings("serial")
+public class Simulator extends JFrame{
+
+	public static int ups = 10;
+	
 	public Simulator() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 }
