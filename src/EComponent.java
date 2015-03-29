@@ -6,7 +6,7 @@ import java.util.Arrays;
 public abstract class EComponent {
 
 	int x, y, width, height;
-	boolean pickedUp = false;
+	private boolean pickedUp = false;
 	Input[] inputs;
 	Output[] outputs;
 
@@ -36,11 +36,11 @@ public abstract class EComponent {
 	}
 
 	public void pickup() {
-		pickedUp = true;
+		setPickedUp(true);
 	}
 
 	public void drop() {
-		pickedUp = false;
+		setPickedUp(false);
 	}
 
 	public boolean hasInputs() {
@@ -49,6 +49,14 @@ public abstract class EComponent {
 
 	public boolean hasOutputs() {
 		return outputs.length > 0;
+	}
+	
+	boolean isPickedUp() {
+		return pickedUp;
+	}
+
+	void setPickedUp(boolean pickedUp) {
+		this.pickedUp = pickedUp;
 	}
 
 	public int getX() {
@@ -139,5 +147,6 @@ public abstract class EComponent {
 	abstract Rectangle[] getInputHovers();
 
 	abstract Rectangle[] getOutputHovers();
+
 
 }

@@ -4,21 +4,12 @@ import java.awt.Rectangle;
 
 public class Switch extends EComponent {
 
-	private Output out;
 	private States state = States.OFF;
 	private Rectangle bounds;
 
 	public Switch(int x, int y) {
 		super(x, y, 95, 28, 0, 1);
-		bounds = new Rectangle(x,y,50,50);
-	}
-
-	public States getState() {
-		return state;
-	}
-
-	public Output getOutput() {
-		return out;
+		bounds = new Rectangle(x,y,95,28);
 	}
 
 	@Override
@@ -37,24 +28,24 @@ public class Switch extends EComponent {
 	}
 
 	public void toggle() {
-		state = States.getEnum(!state.getBoolean());
+		outputs[0].setState(state = States.getEnum(!state.getBoolean()));
 	}
 	
 	@Override
 	public void translate(int xOff, int yOff) {
 		super.translate(xOff, yOff);
-		
 		bounds.translate(xOff, yOff);
 	}
 
 	@Override
 	Rectangle[] getInputHovers() {
+		System.err.println("Switches have no inputs");
 		return null;
 	}
 
 	@Override
 	Rectangle[] getOutputHovers() {
-		return null;
+		return new Rectangle[]{bounds};
 	}
 
 }

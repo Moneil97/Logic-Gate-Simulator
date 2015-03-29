@@ -55,7 +55,7 @@ public enum Ratios {
 
 	private float[] ratio;
 
-	Ratios(float[] f) {
+	private Ratios(float[] f) {
 		ratio = f;
 	}
 

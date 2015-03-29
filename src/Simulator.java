@@ -19,6 +19,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	public static Point mouse = new Point(0, 0);
 	private JPanel panel;
 	private ArrayList<Gate> gates = new ArrayList<Gate>();
+	private ArrayList<Switch> switches = new ArrayList<Switch>();
 	private ArrayList<EComponent> eComps = new ArrayList<EComponent>();
 
 	public Simulator() {
@@ -85,20 +86,17 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	}
 
 	Point mouseDraggedLast = new Point(0, 0);
-
+	boolean dragged = false;
+	
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		dragged = true;
 		mouseDraggedLast.setLocation(mouse);
 		mouse = e.getPoint();
 
 		for (EComponent eComp : eComps)
-			if (eComp.pickedUp)
+			if (eComp.isPickedUp())
 				eComp.translate(mouse.x - mouseDraggedLast.x, mouse.y - mouseDraggedLast.y);
-		
-//		for (Gate gate : gates)
-//			if (gate.pickedUp) {
-//				gate.translate((mouse.x - mouseDraggedLast.x), (mouse.y - mouseDraggedLast.y));
-//			}
 	}
 
 	@Override
@@ -130,30 +128,41 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		for (EComponent b : eComps)
-			if (b.pickedUp){
-				b.drop();
-				if (b.hasInputs()){
-					say(b + " has inputs");
-					for (EComponent a : eComps){
-						if (a != b)
-							if (a.hasOutputs()){
-								say("   " + a + " has outputs");
-								b.acceptOutput(a);
-							}
+		if (dragged){
+			for (EComponent b : eComps)
+				if (b.isPickedUp()){
+					b.drop();
+					if (b.hasInputs()){
+						say(b + " has inputs");
+						for (EComponent a : eComps){
+							if (a != b)
+								if (a.hasOutputs()){
+									say("   " + a + " has outputs");
+									b.acceptOutput(a);
+								}
+						}
+					}
+					if (b.hasOutputs()){
+						say(b + " has outputs");
+						for (EComponent a : eComps){
+							if (a != b)
+								if (a.hasInputs()){
+									say("   " + a + " has inputs");
+									b.acceptInput(a);
+								}
+						}
 					}
 				}
-				if (b.hasOutputs()){
-					say(b + " has outputs");
-					for (EComponent a : eComps){
-						if (a != b)
-							if (a.hasInputs()){
-								say("   " + a + " has inputs");
-								b.acceptInput(a);
-							}
-					}
+		dragged = false;
+		}
+		else{
+			for (Switch s : switches)
+				if (s.checkIfClicked(mouse)){
+					s.toggle();
+					s.drop();
 				}
-			}
+		}
+		
 	}
 
 	@Override
@@ -177,7 +186,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			addGate(new NOT(200, 200));
 		}
 		else if (e.getKeyChar() == 's') {
-			eComps.add(new Switch(mouse.x, mouse.y));
+			addSwitch(new Switch(mouse.x, mouse.y));
 		}else
 			say(e.getKeyChar() + " " + e.getKeyCode());
 
@@ -196,6 +205,11 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	private void addGate(Gate gate){
 		gates.add(gate);
 		eComps.add(gate);
+	}
+	
+	private void addSwitch(Switch sw){
+		switches.add(sw);
+		eComps.add(sw);
 	}
 
 }

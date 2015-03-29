@@ -1,9 +1,11 @@
+public abstract class IO {}
+
 enum States {
 	ON(true), OFF(false);
 
 	private boolean b;
 
-	States(boolean b) {
+	private States(boolean b) {
 		this.b = b;
 	}
 
@@ -16,23 +18,17 @@ enum States {
 	}
 }
 
-public abstract class IO {
+class Input{
 
-}
+	private Output out = new Output();
+	private final int ID;
+	private static int Icounter = 0;
 
-class Input extends IO {
-
-	Output out = new Output();
-	States always = null;
-	final int ID;
-	static int Icounter = 0;
-
-	public Input() {
-		this(null);
+	public Output getOut() {
+		return out;
 	}
 
-	public Input(States state) {
-		always = state;
+	public Input() {
 		ID = Icounter++;
 	}
 
@@ -45,10 +41,7 @@ class Input extends IO {
 	}
 
 	public States getState() {
-		if (always != null)
-			return always;
-		else
-			return out.state;
+		return out.getState();
 	}
 
 	public static Input getDefault() {
@@ -69,9 +62,14 @@ class Input extends IO {
 	}
 }
 
-class Output extends IO {
-	States state = States.OFF;
-	final int ID;
+class Output{
+	private States state = States.OFF;
+	private final int ID;
+	
+	public States getState() {
+		return state;
+	}
+
 	static int Ocounter = 0;
 
 	public Output() {

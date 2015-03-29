@@ -7,16 +7,15 @@ import java.awt.image.BufferedImage;
 
 public abstract class Gate extends EComponent {
 
-	BufferedImage[] images;
+	private BufferedImage[] images;
 	private final int TOP = 0, BOTTOM = 1;
 	private final int NONE = 0, IN1 = 1, IN2 = 2, BOTH = 3;
 	private boolean[] hovers;
 	private float[][] hoverRatios;
 	private float[][] boundsRatios;
 	private Polygon bounds;
-	Rectangle inputHovers[];
-	Rectangle outputHovers[];
-	Gates type;
+	private Rectangle inputHovers[];
+	private Rectangle outputHovers[];
 
 	public Gate(int x, int y, Gates type) {
 		this(x, y, type, 2, 1);
@@ -32,11 +31,10 @@ public abstract class Gate extends EComponent {
 		boundsRatios = getBoundsRatios();
 		generateBounds();
 		images = ImageTools.getGateImageGroup(type);
-		this.type = type;
 	}
 
-	public abstract float[][] getHoverRatios();
 	public abstract float[][] getBoundsRatios();
+	public abstract float[][] getHoverRatios();
 
 	@Override
 	void update() {
@@ -49,16 +47,30 @@ public abstract class Gate extends EComponent {
 	@SuppressWarnings("unused")
 	private void annoyingOutput() {
 		say(inputs[0] + " " + inputs[0].getState() + " + " + inputs[1] + " "
-	+ inputs[1].getState() + " = " + outputs[0].state + " "+ outputs[0]);
+	+ inputs[1].getState() + " = " + outputs[0].getState() + " "+ outputs[0]);
 	}
 
 	abstract States calculateState();
 
+	
+	
+//	@Override
+//	public void drop() {
+//		super.drop();
+//		generateBounds();
+//		generateHovers();
+//	}
+	//TODO check which is faster on a slow computer
+	
 	@Override
-	public void drop() {
-		super.drop();
-		generateBounds();
-		generateHovers();
+	public void translate(int xOff, int yOff) {
+		super.translate(xOff, yOff);
+		bounds.translate(xOff, yOff);
+		
+		for (int i=0; i < inputHovers.length; i++)
+			inputHovers[i].translate(xOff, yOff);
+		for (int i=0; i < outputHovers.length; i++)
+			outputHovers[i].translate(xOff, yOff);
 	}
 
 	public void checkHover() {
