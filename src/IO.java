@@ -1,15 +1,23 @@
 
-public class IO {
+enum States{
+	ON, OFF;
+}
 
-	public IO() {
-		// TODO Auto-generated constructor stub
-	}
+public abstract class IO {
+
+	States state = States.OFF;
 
 }
 
 
 class Input extends IO{
 	
+	
+	
+	public static Input getDefault(){
+		Input temp = new Input();
+		return temp;
+	}
 }
 
 class Output extends IO{

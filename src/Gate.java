@@ -11,7 +11,6 @@ public abstract class Gate extends EComponent{
 	
 	public static final int GATE_WIDTH = 600/4, GATE_HEIGHT = 360/4;
 	
-	//int x,y;
 	BufferedImage image;
 	Input in1, in2;
 	Output out;
@@ -34,19 +33,13 @@ public abstract class Gate extends EComponent{
 	@Override
 	public void translate(int xOff, int yOff) {
 		super.translate(xOff, yOff);
-		
-		
-	
 	}
 	
 	@Override
 	public void drop() {
 		super.drop();
-		
-		//Move this to only generate on release
 		generateBounds();
 		generateHovers();
-		
 	}
 	
 	public void checkHover() {
@@ -129,18 +122,13 @@ public abstract class Gate extends EComponent{
 		System.out.println(x);
 	}
 
+	public void checkForMatchedOutput(Gate gateToCheckIfItsOutputsOverlapInput) {
+		//if (this.outputHover.)
+	}
+
 }
 
 class AND extends Gate{
-	
-//	private final float[] bottomXRatios = { 0.18f, 0.0f, 0.0f, 0.18f};
-//	private final float[] bottomYRatios = { 0.85f, 0.85f, 0.6f, 0.6f};
-//	private final float[] topXRatios = { 0.0f, 0.18f, 0.18f, 0.0f};
-//	private final float[] topYRatios = { 0.13f, 0.13f, 0.4f, 0.4f};
-//	private final float[] outXRatios = { 0.8f, 1.0f, 1.0f, 0.8f};
-//	private final float[] outYRatios = { 0.33f, 0.33f, 0.64f, 0.64f};
-//	private final float[][] ratios = {bottomXRatios, bottomYRatios, topXRatios, topYRatios, outXRatios, outYRatios};
-//	private final float[][] ratios = Ratios.values();
 	
 	public AND(int x, int y) {
 		super(x, y, ImageTools.getGateImage(Gates.AND));
@@ -153,6 +141,5 @@ class AND extends Gate{
 class OR extends Gate{
 	public OR(int x, int y) {
 		super(x, y, ImageTools.getGateImage(Gates.OR));
-		//generateHovers(ratios);
 	}
 }

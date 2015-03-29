@@ -2,22 +2,25 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 
 @SuppressWarnings("serial")
-public class Simulator extends JFrame implements Runnable, MouseMotionListener, MouseListener{
+public class Simulator extends JFrame implements Runnable, MouseMotionListener, MouseListener, KeyListener{
 
 	public static int ups = 10;
 	public static Point mouse = new Point(0,0);
 	private JPanel panel;
-	private AND and;
-	
+	//private AND and;
+	private ArrayList<Gate> gates = new ArrayList<Gate>();
 	
 	public Simulator() {
 		
@@ -27,14 +30,17 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 //		for (EComponent comp : comps)
 //			comp.update();
 		
-		and = new AND(100,100);
+		
+		//and = new AND(100,100);
+		gates.add(new AND(100,100));
 		
 		this.add(panel = new JPanel(){
 			@Override
 			protected void paintComponent(Graphics g1) {
 				super.paintComponent(g1);
 				Graphics2D g = (Graphics2D) g1;
-				and.draw(g);
+				for (Gate gate : gates)
+					gate.draw(g);
 			}
 		});
 		panel.setBackground(Color.white);
@@ -45,6 +51,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		this.setVisible(true);
 		panel.addMouseMotionListener(this);
 		panel.addMouseListener(this);
+		this.addKeyListener(this);
 		new Thread(this).start();
 		
 		new Thread(new Runnable() {
@@ -68,7 +75,9 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	public void run() {
 		while (true){
 			
-			and.update();
+			for (Gate gate : gates)
+				gate.update();
+			//and.update();
 			
 			try {
 				Thread.sleep(ups/1000);
@@ -86,10 +95,11 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		mouseDraggedLast.setLocation(mouse);
 		mouse = e.getPoint();
 		
-		if (and.pickedUp){
-			and.translate((mouse.x-mouseDraggedLast.x), (mouse.y-mouseDraggedLast.y));
-			//say("moved by :" + (mouse.x-mouseDraggedLast.x) + " " + (mouse.y-mouseDraggedLast.y));
-		}
+		for (Gate gate : gates)
+			if (gate.pickedUp){
+				gate.translate((mouse.x-mouseDraggedLast.x), (mouse.y-mouseDraggedLast.y));
+				//say("moved by :" + (mouse.x-mouseDraggedLast.x) + " " + (mouse.y-mouseDraggedLast.y));
+			}
 		
 	}
 
@@ -113,13 +123,20 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (and.checkIfClicked(e.getPoint()))
-			and.pickup();
+		for (Gate gate : gates)
+			if (gate.checkIfClicked(e.getPoint()))
+				gate.pickup();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		and.drop();
+		for (Gate gate : gates)
+			if (gate.pickedUp){
+				gate.drop();
+				for (Gate gate2 : gates)
+					if (gate != gate2)
+						gate2.checkForMatchedOutput(gate);
+			}
 	}
 
 	@Override
@@ -129,6 +146,22 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		if (e.getKeyChar() == KeyEvent.VK_F);
+			gates.add(new AND(200,200));
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
 		
 	}
 

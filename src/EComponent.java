@@ -34,7 +34,5 @@ public abstract class EComponent {
 	abstract void draw(Graphics2D g);
 	
 	abstract boolean checkIfClicked(Point p);
-	
-	//abstract checkHover
 
 }
