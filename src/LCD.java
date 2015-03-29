@@ -21,9 +21,8 @@ public class LCD extends EComponent{
 	}
 
 	@Override
-	void checkIfClicked(Point p) {
-		// TODO Auto-generated method stub
-		
+	boolean checkIfClicked(Point p) {
+		return false;
 	}
 
 }

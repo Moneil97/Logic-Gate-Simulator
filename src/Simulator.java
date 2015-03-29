@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -36,12 +37,14 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				and.draw(g);
 			}
 		});
+		panel.setBackground(Color.white);
 		
 		this.setSize(1000,800);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		panel.addMouseMotionListener(this);
+		panel.addMouseListener(this);
 		new Thread(this).start();
 		
 		new Thread(new Runnable() {
@@ -75,10 +78,19 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			
 		}
 	}
+	
+	Point mouseDraggedLast = new Point(0,0);
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		mouseDraggedLast.setLocation(mouse);
 		mouse = e.getPoint();
+		
+		if (and.pickedUp){
+			and.translate((mouse.x-mouseDraggedLast.x), (mouse.y-mouseDraggedLast.y));
+			//say("moved by :" + (mouse.x-mouseDraggedLast.x) + " " + (mouse.y-mouseDraggedLast.y));
+		}
+		
 	}
 
 	@Override
@@ -101,12 +113,13 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		//all.checkIfClicked(e.getPoint());
+		if (and.checkIfClicked(e.getPoint()))
+			and.pickup();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+		and.drop();
 	}
 
 	@Override
