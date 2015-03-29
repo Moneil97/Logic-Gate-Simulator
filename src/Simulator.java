@@ -26,12 +26,6 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 		ImageTools.loadImages();
 
-//		gates.add(new AND(100, 100));
-//		eComps.addAll(gates);
-//
-//		gates.get(0).inputs[0] = new Input(States.ON);
-//		gates.get(0).inputs[1] = new Input(States.ON);
-
 		this.add(panel = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics g1) {
@@ -87,7 +81,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	Point mouseDraggedLast = new Point(0, 0);
 	boolean dragged = false;
-	
+
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		dragged = true;
@@ -113,9 +107,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-
-	}
+	public void mouseClicked(MouseEvent e) {}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -128,86 +120,77 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (dragged){
-			for (EComponent b : eComps)
-				if (b.isPickedUp()){
-					b.drop();
-					if (b.hasInputs()){
-						say(b + " has inputs");
-						for (EComponent a : eComps){
-							if (a != b)
-								if (a.hasOutputs()){
-									say("   " + a + " has outputs");
-									b.acceptOutput(a);
+		if (dragged) {
+			for (EComponent droppedEComp : eComps)
+				if (droppedEComp.isPickedUp()) {
+					droppedEComp.drop();
+					if (droppedEComp.hasInputs()) {
+						say(droppedEComp + " has inputs");
+						for (EComponent otherEComp : eComps) {
+							if (otherEComp != droppedEComp)
+								if (otherEComp.hasOutputs()) {
+									say("   " + otherEComp + " has outputs");
+									droppedEComp.acceptOutput(otherEComp);
 								}
 						}
 					}
-					if (b.hasOutputs()){
-						say(b + " has outputs");
-						for (EComponent a : eComps){
-							if (a != b)
-								if (a.hasInputs()){
-									say("   " + a + " has inputs");
-									b.acceptInput(a);
+					if (droppedEComp.hasOutputs()) {
+						say(droppedEComp + " has outputs");
+						for (EComponent otherEComp : eComps) {
+							if (otherEComp != droppedEComp)
+								if (otherEComp.hasInputs()) {
+									say("   " + otherEComp + " has inputs");
+									droppedEComp.acceptInput(otherEComp);
 								}
 						}
 					}
 				}
-		dragged = false;
-		}
-		else{
+			dragged = false;
+		} else {
 			for (Switch s : switches)
-				if (s.checkIfClicked(mouse)){
+				if (s.checkIfClicked(mouse)) {
 					s.toggle();
 					s.drop();
 				}
 		}
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
 
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
+	public void mouseEntered(MouseEvent e) {}
 
-	}
+	@Override
+	public void mouseExited(MouseEvent e) {}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		if (e.getKeyChar() == 'a') {
-			addGate(new AND(200, 200));
+			addGate(new AND(mouse.x, mouse.y));
 		} else if (e.getKeyChar() == 'o') {
-			addGate( new OR(200, 200));
-		}
-		else if (e.getKeyChar() == 'n') {
-			addGate(new NOT(200, 200));
-		}
-		else if (e.getKeyChar() == 's') {
+			addGate(new OR(mouse.x, mouse.y));
+		} else if (e.getKeyChar() == 'n') {
+			addGate(new NOT(mouse.x, mouse.y));
+		} else if (e.getKeyChar() == 'x') {
+			addGate(new XOR(mouse.x, mouse.y));
+		} else if (e.getKeyChar() == 's') {
 			addSwitch(new Switch(mouse.x, mouse.y));
-		}else
+		} else
 			say(e.getKeyChar() + " " + e.getKeyCode());
 
 	}
 
 	@Override
-	public void keyPressed(KeyEvent e) {
-
-	}
+	public void keyPressed(KeyEvent e) {}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
+	public void keyReleased(KeyEvent e) {}
 
-	}
-	
-	private void addGate(Gate gate){
+	private void addGate(Gate gate) {
 		gates.add(gate);
 		eComps.add(gate);
 	}
-	
-	private void addSwitch(Switch sw){
+
+	private void addSwitch(Switch sw) {
 		switches.add(sw);
 		eComps.add(sw);
 	}

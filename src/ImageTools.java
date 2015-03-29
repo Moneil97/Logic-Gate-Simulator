@@ -10,6 +10,7 @@ public class ImageTools {
 	private static final BufferedImage[] ANDImages = new BufferedImage[4];
 	private static final BufferedImage[] ORImages = new BufferedImage[4];
 	private static final BufferedImage[] NOTImages = new BufferedImage[2];
+	private static final BufferedImage[] XORImages = new BufferedImage[4];
 	public static BufferedImage ON;
 	public static BufferedImage OFF;
 	public static final int GATE_WIDTH = 600 / 4, GATE_HEIGHT = 360 / 4;
@@ -17,10 +18,11 @@ public class ImageTools {
 	public static void loadImages() {
 		
 		int counter = 0;
-		for (String s : new String[]{"Labeled","IN1","IN2","IN1_IN2"})
+		for (String s : new String[]{"","_IN1","_IN2","_IN1_IN2"})
 			try{
-				ANDImages[counter] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/AND/AND_" + s + "_Gate.png"));
-				ORImages[counter++] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/OR/OR_" + s + "_Gate.png"));
+				ANDImages[counter] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/AND/AND" + s + "_Gate.png"));
+				ORImages[counter] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/OR/OR" + s + "_Gate.png"));
+				XORImages[counter++] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/XOR/XOR" + s + "_Gate.png"));
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -72,6 +74,8 @@ public class ImageTools {
 			return ORImages;
 		else if (type.equals(Gates.NOT))
 			return NOTImages;
+		else if (type.equals(Gates.XOR))
+			return XORImages;
 		else {
 			System.err.println("Image does not exist");
 			return null;

@@ -249,3 +249,26 @@ class NOT extends Gate {
 	}
 
 }
+
+class XOR extends Gate{
+	public XOR(int x, int y) {
+		super(x, y, Gates.XOR);
+	}
+	
+	@Override
+	States calculateState() {
+		return States.getEnum(inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean());
+	}
+
+	@Override
+	public float[][] getHoverRatios() {
+		return RatioGroups.XOR_GATE_HOVER_RATIOS.getRatioGroup();
+	}
+
+	@Override
+	public float[][] getBoundsRatios() {
+		return RatioGroups.XOR_GATE_BOUNDS_RATIOS.getRatioGroup();
+	}
+
+	
+}

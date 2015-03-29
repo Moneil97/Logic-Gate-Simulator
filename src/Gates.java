@@ -1,3 +1,3 @@
 public enum Gates {
-	AND, OR, NOT
+	AND, OR, NOT, XOR
 }
