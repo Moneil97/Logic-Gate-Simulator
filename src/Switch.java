@@ -1,5 +1,6 @@
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 public class Switch extends EComponent {
 
@@ -7,7 +8,7 @@ public class Switch extends EComponent {
 	private States state = States.OFF;
 
 	public Switch(int x, int y) {
-		super(x, y, 50, 50);
+		super(x, y, 50, 50, 0, 1);
 	}
 
 	public States getState() {
@@ -35,6 +36,18 @@ public class Switch extends EComponent {
 
 	public void toggle() {
 		state = States.getEnum(!state.getBoolean());
+	}
+
+	@Override
+	Rectangle[] getInputHovers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	Rectangle[] getOutputHovers() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

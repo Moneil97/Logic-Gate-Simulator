@@ -28,8 +28,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		gates.add(new AND(100, 100));
 		eComps.addAll(gates);
 
-		gates.get(0).inTop = new Input(States.ON);
-		gates.get(0).inBottom = new Input(States.ON);
+		gates.get(0).inputs[0] = new Input(States.ON);
+		gates.get(0).inputs[1] = new Input(States.ON);
 
 		this.add(panel = new JPanel() {
 			@Override
@@ -129,19 +129,26 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		for (Gate gate : gates)
-			if (gate.pickedUp) {
-				gate.drop();
-				
-			}
+//		for (Gate gate : gates)
+//			if (gate.pickedUp) {
+//				gate.drop();
+//				
+//			}
 		
-		for (EComponent eComp : eComps)
-			if (eComp.pickedUp){
-				eComp.drop();
-				if (eComp.hasInputs()){
-					
+		for (EComponent b : eComps)
+			if (b.pickedUp){
+				b.drop();
+				if (b.hasInputs()){
+					say(b + " has inputs");
+					for (EComponent a : eComps){
+						if (a != b)
+							if (a.hasOutputs()){
+								say("   " + a + " has outputs");
+								b.acceptOutput(a);
+							}
+					}
 				}
-				if (eComp.hasOutputs()){
+				if (b.hasOutputs()){
 					
 				}
 //				if (eComp instanceof Gate){

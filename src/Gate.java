@@ -8,26 +8,27 @@ import java.awt.image.BufferedImage;
 public abstract class Gate extends EComponent {
 
 	BufferedImage image;
-	Input inTop = new Input(), inBottom = new Input();
-	Output out = new Output();
+	//Input inTop = new Input(), inBottom = new Input();
+	//Output out = new Output();
+	private final int top = 0, bottom = 1;
 	private boolean[] hovers = { false, false, false };
 	private float[][] hoverRatios;
 	private float[][] boundsRatios;
-	private Rectangle topInputHover, bottomInputHover, outputHover;
+	//private Rectangle topInputHover, bottomInputHover, outputHover;
 	private Polygon bounds;
 
 	public Gate(int x, int y, BufferedImage image) {
-		super(x, y, 600 / 4, 360 / 4);
+		super(x, y, 600 / 4, 360 / 4, 2, 1);
 		this.image = image;
 	}
 
 	@Override
 	void update() {
 		checkHover();
-		out.setState(calculateState());
+		outputs[0].setState(calculateState());
 		// say(inTop + " " + inTop.getState() + " + " + inBottom + " " +
 		// inBottom.getState() + " = " + out.state + " " + out);
-		say(this + " " + inTop.getState() + " + " + inBottom.getState() + " = " + out.state);
+		//say(this + " " + inputs[top].getState() + " + " + inputs[bottom].getState() + " = " + outputs[0].state);
 	}
 
 	abstract States calculateState();
@@ -45,9 +46,9 @@ public abstract class Gate extends EComponent {
 	}
 
 	public void checkHover() {
-		hovers[0] = bottomInputHover.contains(Simulator.mouse);
-		hovers[1] = topInputHover.contains(Simulator.mouse);
-		hovers[2] = outputHover.contains(Simulator.mouse);
+		hovers[0] = inputHovers[top].contains(Simulator.mouse);
+		hovers[1] = inputHovers[bottom].contains(Simulator.mouse);
+		hovers[2] = outputHovers[0].contains(Simulator.mouse);
 		// say(Arrays.toString(hovers));
 	}
 
@@ -56,11 +57,11 @@ public abstract class Gate extends EComponent {
 		g.drawImage(image, x, y, width, height, null);
 		g.setColor(Color.blue);
 		if (hovers[0])
-			g.draw(bottomInputHover);
+			g.draw(inputHovers[top]);
 		if (hovers[1])
-			g.draw(topInputHover);
+			g.draw(inputHovers[bottom]);
 		if (hovers[2])
-			g.draw(outputHover);
+			g.draw(outputHovers[0]);
 	}
 
 	public void setBoundsRatios(float[][] ratios) {
@@ -88,6 +89,9 @@ public abstract class Gate extends EComponent {
 		generateHovers();
 	}
 
+	Rectangle inputHovers[] = new Rectangle[2];
+	Rectangle outputHovers[]= new Rectangle[1];
+	
 	protected void generateHovers() {
 
 		int size = hoverRatios[0].length;
@@ -100,21 +104,21 @@ public abstract class Gate extends EComponent {
 			ys[i] = Math.round(y + hoverRatios[1][i] * height);
 		}
 
-		topInputHover = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
+		inputHovers[top] = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
 
 		for (int i = 0; i < size; i++) {
 			xs[i] = Math.round(x + hoverRatios[2][i] * width);
 			ys[i] = Math.round(y + hoverRatios[3][i] * height);
 		}
 
-		bottomInputHover = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
+		inputHovers[bottom] = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
 
 		for (int i = 0; i < size; i++) {
 			xs[i] = Math.round(x + hoverRatios[4][i] * width);
 			ys[i] = Math.round(y + hoverRatios[5][i] * height);
 		}
 
-		outputHover = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
+		outputHovers[0] = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
 
 	}
 
@@ -122,23 +126,33 @@ public abstract class Gate extends EComponent {
 	boolean checkIfClicked(Point p) {
 		return (bounds.contains(p));
 	}
-
-	public void checkForMatchedOutput(Gate gateRight) {
-		if (outputHover.intersects(gateRight.bottomInputHover))
-			say(this + "is paired with " + gateRight);
-
-		if (outputHover.intersects(gateRight.topInputHover)) {
-			say(this + "is paired with " + gateRight);
-			// connectToTopInput(gateRight.out);
-			gateRight.inTop.connect(this.out);
-		}
-
+	
+	@Override
+	Rectangle[] getInputHovers() {
+		return inputHovers;
 	}
 
-	public void connectToTopInput(Output out) {
-		inTop.connect(out);
-		say(inTop.getState());
+	@Override
+	Rectangle[] getOutputHovers() {
+		return outputHovers;
 	}
+
+//	public void checkForMatchedOutput(Gate gateRight) {
+//		if (outputHover.intersects(gateRight.bottomInputHover))
+//			say(this + "is paired with " + gateRight);
+//
+//		if (outputHover.intersects(gateRight.topInputHover)) {
+//			say(this + "is paired with " + gateRight);
+//			// connectToTopInput(gateRight.out);
+//			gateRight.inputs[0].connect(this.outputs[0]);
+//		}
+//
+//	}
+
+//	public void connectToTopInput(Output out) {
+//		inputs[0].connect(out);
+//		say(inputs[0].getState());
+//	}
 }
 
 class AND extends Gate {
@@ -151,8 +165,10 @@ class AND extends Gate {
 
 	@Override
 	States calculateState() {
-		return States.getEnum(inTop.getState() == States.ON && inBottom.getState() == States.ON);
+		return States.getEnum(inputs[0].getState() == States.ON && inputs[1].getState() == States.ON);
 	}
+
+	
 
 }
 
@@ -165,6 +181,6 @@ class OR extends Gate {
 
 	@Override
 	States calculateState() {
-		return States.getEnum(inTop.getState() == States.ON || inBottom.getState() == States.ON);
+		return States.getEnum(inputs[0].getState() == States.ON || inputs[1].getState() == States.ON);
 	}
 }

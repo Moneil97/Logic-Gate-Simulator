@@ -1,5 +1,6 @@
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 
 public class LCD extends EComponent{
@@ -23,6 +24,18 @@ public class LCD extends EComponent{
 	@Override
 	boolean checkIfClicked(Point p) {
 		return false;
+	}
+
+	@Override
+	Rectangle[] getInputHovers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	Rectangle[] getOutputHovers() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

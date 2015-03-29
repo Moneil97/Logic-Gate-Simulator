@@ -36,6 +36,10 @@ class Input extends IO {
 	public void connect(Output out) {
 		this.out = out;
 	}
+	
+	public Output getCurrentConnectedOutput(){
+		return out;
+	}
 
 	public States getState() {
 		if (always != null)
@@ -48,6 +52,14 @@ class Input extends IO {
 		Input temp = new Input();
 		return temp;
 	}
+
+	public boolean isConnectedTo(Output output) {
+		return (out == output);
+	}
+
+	public void disconnect() {
+		out = new Output();
+	}
 }
 
 class Output extends IO {
@@ -56,4 +68,9 @@ class Output extends IO {
 	public void setState(States newState) {
 		state = newState;
 	}
+
+//	public void disconnect() {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }
