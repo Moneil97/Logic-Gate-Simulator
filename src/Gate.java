@@ -40,13 +40,18 @@ public abstract class Gate extends EComponent {
 	void update() {
 		checkHover();
 		outputs[0].setState(calculateState());
-//		annoyingOutput();
+		annoyingOutput();
 	}
 
 	@SuppressWarnings("unused")
 	private void annoyingOutput() {
-		say(inputs[0] + " " + inputs[0].getState() + " + " + inputs[1] + " "
-	+ inputs[1].getState() + " = " + outputs[0].getState() + " "+ outputs[0]);
+		if (inputs.length > 1)
+			say(inputs[0] + " " + inputs[0].getState() + " + " + inputs[1] + " "
+					+ inputs[1].getState() + " == " + outputs[0].getState() + " "+ outputs[0]
+					+ "                 "+
+					inputs[0].getOut() + inputs[0].getOut().getState() + "  +  " + inputs[1].getOut() + (inputs[1].getOut().getState()));
+		else
+			say(inputs[0] + " " + inputs[0].getState() + " --> " + outputs[0].getState() + " "+ outputs[0]);
 	}
 
 	abstract States calculateState();

@@ -11,14 +11,16 @@ public class Wire extends EComponent {
 	
 	public Wire(Input in, Output out) {
 		super(0, 0, 0, 0, 1, 1);
-		inputs[0] = in;
-		outputs[0] = out;
-		in.connect(out);
+		in.connect(outputs[0]);
+		inputs[0].connect(out);
+		
 	}
 
 	@Override
 	void update() {
 		outputs[0].setState(inputs[0].getState());
+		
+		say("      " + inputs[0] + "(" + inputs[0].getOut() + ")   -->  " + outputs[0] + "(" + outputs[0].getState());
 	}
 
 	@Override
@@ -58,12 +60,6 @@ class WireCreator{
 //		end = new Point();
 		System.out.println("Started");
 	}
-	
-//	public WireCreator(Point start){
-//		System.out.println("Started");
-//		this.start = start;
-//		end = new Point();
-//	}
 	
 	void setStartPoint(Point p){
 		System.out.println("start set");

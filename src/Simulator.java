@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -16,7 +15,7 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class Simulator extends JFrame implements Runnable, MouseMotionListener, MouseListener, KeyListener {
 
-	public static int ups = 20;
+	public static int ups = 30;
 	public static Point mouse = new Point(0, 0);
 	private JPanel panel;
 	private ArrayList<Gate> gates = new ArrayList<Gate>();
@@ -70,6 +69,9 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 			for (EComponent eComp : eComps)
 				eComp.update();
+			
+			for (Wire wire : wires)
+				wire.update();
 
 			try {
 				Thread.sleep(1000 / ups);
@@ -82,6 +84,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	Point mouseDraggedLast = new Point(0, 0);
 	boolean dragged = false;
+	ArrayList<Wire> wires = new ArrayList<Wire>();
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -125,7 +128,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				}
 			}
 			if (creator.in != null && creator.out != null){
-				creator.create();
+				wires.add(creator.create());
 				creator = null;
 			}
 		}

@@ -111,6 +111,7 @@ public abstract class EComponent {
 					say("      " + getInputHovers()[i] + " does not intersect: " + eCompToCheckOutputsOf.getOutputHovers()[j]);
 					if (!(eCompToCheckOutputsOf instanceof Wire)) {
 						if (inputs[i].isConnectedTo(eCompToCheckOutputsOf.outputs[j])) {
+							
 							inputs[i].disconnect();
 							say("      " + inputs[i] + " disconnected from " + eCompToCheckOutputsOf.outputs[j]);
 						}
@@ -133,6 +134,7 @@ public abstract class EComponent {
 					say("      " + eCompToCheckInputsOf.getInputHovers()[j] + " does not intersect: " + getOutputHovers()[i]);
 					if (!(eCompToCheckInputsOf instanceof Wire)) {
 						if (inputs[j].isConnectedTo(outputs[i])) {
+							say("class: " + eCompToCheckInputsOf.getClass());
 							inputs[j].disconnect();
 							say("      " + inputs[j] + " disconnected from " + outputs[i]);
 						}
