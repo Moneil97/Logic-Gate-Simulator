@@ -94,10 +94,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		for (Gate gate : gates)
 			if (gate.pickedUp) {
 				gate.translate((mouse.x - mouseDraggedLast.x), (mouse.y - mouseDraggedLast.y));
-				// say("moved by :" + (mouse.x-mouseDraggedLast.x) + " " +
-				// (mouse.y-mouseDraggedLast.y));
 			}
-
 	}
 
 	@Override
@@ -129,12 +126,6 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-//		for (Gate gate : gates)
-//			if (gate.pickedUp) {
-//				gate.drop();
-//				
-//			}
-		
 		for (EComponent b : eComps)
 			if (b.pickedUp){
 				b.drop();
@@ -149,15 +140,15 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					}
 				}
 				if (b.hasOutputs()){
-					
+					say(b + " has outputs");
+					for (EComponent a : eComps){
+						if (a != b)
+							if (a.hasInputs()){
+								say("   " + a + " has inputs");
+								b.acceptInput(a);
+							}
+					}
 				}
-//				if (eComp instanceof Gate){
-//					for (Gate gate2 : gates)
-//						if (eComp != gate2)
-//							gate2.checkForMatchedOutput((Gate) eComp);
-//				}else if (eComp instanceof Switch){
-//					
-//				}
 			}
 	}
 

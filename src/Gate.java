@@ -28,8 +28,8 @@ public abstract class Gate extends EComponent {
 		States state = calculateState();
 		outputs[0].setState(state);
 		//say(state);
-		 say(inputs[0] + " " + inputs[0].getState() + " + " + inputs[1] + " " +
-				 inputs[1].getState() + " = " + outputs[0].state + " " + outputs[0]);
+//		 say(inputs[0] + " " + inputs[0].getState() + " + " + inputs[1] + " " +
+//				 inputs[1].getState() + " = " + outputs[0].state + " " + outputs[0]);
 		// say(this + " " + inputs[top].getState() + " + " +
 		// inputs[bottom].getState() + " = " + outputs[0].state);
 	}

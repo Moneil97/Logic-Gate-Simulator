@@ -11,7 +11,7 @@ public abstract class EComponent {
 	Output[] outputs;
 
 	public EComponent() {
-		this(0, 0, 100, 100,0,0);
+		this(0, 0, 100, 100, 0, 0);
 	}
 
 	public EComponent(int x, int y, int width, int height, int inputsAmount, int outputsAmount) {
@@ -20,14 +20,14 @@ public abstract class EComponent {
 		this.width = width;
 		this.height = height;
 		this.inputs = new Input[inputsAmount];
-		for (int i =0; i < inputsAmount; i++)
+		for (int i = 0; i < inputsAmount; i++)
 			this.inputs[i] = new Input();
 		this.outputs = new Output[outputsAmount];
-		for (int i =0; i < outputsAmount; i++)
+		for (int i = 0; i < outputsAmount; i++)
 			this.outputs[i] = new Output();
 		say(Arrays.toString(this.inputs));
 		say(Arrays.toString(this.outputs));
-		
+
 	}
 
 	public void translate(int xOff, int yOff) {
@@ -42,12 +42,12 @@ public abstract class EComponent {
 	public void drop() {
 		pickedUp = false;
 	}
-	
-	public boolean hasInputs(){
+
+	public boolean hasInputs() {
 		return inputs.length > 0;
 	}
-	
-	public boolean hasOutputs(){
+
+	public boolean hasOutputs() {
 		return outputs.length > 0;
 	}
 
@@ -94,33 +94,50 @@ public abstract class EComponent {
 	}
 
 	public void acceptOutput(EComponent eCompToCheckOutputsOf) {
-		for (int i=0; i <inputs.length; i++){
-			for (int j=0; j <eCompToCheckOutputsOf.outputs.length; j++){
-				if (this.getInputHovers()[i].intersects(eCompToCheckOutputsOf.getOutputHovers()[j])){
+		for (int i = 0; i < inputs.length; i++) {
+			for (int j = 0; j < eCompToCheckOutputsOf.outputs.length; j++) {
+				if (this.getInputHovers()[i].intersects(eCompToCheckOutputsOf.getOutputHovers()[j])) {
 					inputs[i].connect(eCompToCheckOutputsOf.outputs[j]);
 					say("      " + inputs[i] + " is connected to: " + eCompToCheckOutputsOf.outputs[j]);
-				}
-				else{
+				} else {
 					say("      " + getInputHovers()[i] + " does not intersect: " + eCompToCheckOutputsOf.getOutputHovers()[j]);
-					if (!(eCompToCheckOutputsOf instanceof Wire)){
-						if (inputs[i].isConnectedTo(eCompToCheckOutputsOf.outputs[j])){
+					if (!(eCompToCheckOutputsOf instanceof Wire)) {
+						if (inputs[i].isConnectedTo(eCompToCheckOutputsOf.outputs[j])) {
 							inputs[i].disconnect();
 							say("      " + inputs[i] + " disconnected from " + eCompToCheckOutputsOf.outputs[j]);
 						}
-					}
-					else{
+					} else {
 						say("lookout! It's got a wire!");
 					}
 				}
 			}
 		}
 	}
-	
+
 	public void acceptInput(EComponent eCompToCheckInputsOf) {
-		
+		Input[] inputs = eCompToCheckInputsOf.inputs;
+		for (int i = 0; i < outputs.length; i++) {
+			for (int j = 0; j < inputs.length; j++) {
+				if (this.getOutputHovers()[i].intersects(eCompToCheckInputsOf.getInputHovers()[j])) {
+					inputs[j].connect(outputs[i]);
+					say("      " + inputs[j] + " is connected to: " + outputs[i]);
+				} else {
+					say("      " + eCompToCheckInputsOf.getInputHovers()[j] + " does not intersect: " + getOutputHovers()[i]);
+					if (!(eCompToCheckInputsOf instanceof Wire)) {
+						if (inputs[j].isConnectedTo(outputs[i])) {
+							inputs[j].disconnect();
+							say("      " + inputs[j] + " disconnected from " + outputs[i]);
+						}
+					} else {
+						say("wire you doing this");
+					}
+				}
+			}
+		}
 	}
-	
+
 	abstract Rectangle[] getInputHovers();
+
 	abstract Rectangle[] getOutputHovers();
 
 }
