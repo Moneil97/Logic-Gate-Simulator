@@ -40,7 +40,7 @@ public abstract class Gate extends EComponent {
 	void update() {
 		checkHover();
 		outputs[0].setState(calculateState());
-		annoyingOutput();
+		//annoyingOutput();
 	}
 
 	@SuppressWarnings("unused")

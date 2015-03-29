@@ -120,20 +120,15 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		
 		if (creator != null){
 			for (EComponent eComp : eComps){
-				for (int i=0; i < eComp.getInputHovers().length; i++){
-					if (eComp.getInputHovers()[i].contains(mouse)){
-						creator.setInput(eComp.inputs[i]);
-						creator.setInputParent(eComp);
-					}
-				}
-				for (int i=0; i < eComp.getOutputHovers().length; i++){
-					if (eComp.getOutputHovers()[i].contains(mouse)){
-						creator.setOutput(eComp.outputs[i]);
-						creator.setOutputParent(eComp);
-					}
-				}
+				if (eComp.getInputHovers() != null)
+					for (int i=0; i < eComp.getInputHovers().length; i++)
+						if (eComp.getInputHovers()[i].contains(mouse))
+							creator.setInputParent(eComp, i);
+				for (int i=0; i < eComp.getOutputHovers().length; i++)
+					if (eComp.getOutputHovers()[i].contains(mouse))
+						creator.setOutputParent(eComp, i);
 			}
-			if (creator.in != null && creator.out != null){
+			if (creator.parent1 != null && creator.parent2 != null){
 				wires.add(creator.create());
 				creator = null;
 			}
