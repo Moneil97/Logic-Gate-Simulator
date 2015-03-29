@@ -24,13 +24,16 @@ class Input extends IO {
 
 	Output out = new Output();
 	States always = null;
+	final int ID;
+	static int Icounter = 0;
 
 	public Input() {
-
+		this(null);
 	}
 
 	public Input(States state) {
 		always = state;
+		ID = Icounter++;
 	}
 
 	public void connect(Output out) {
@@ -60,17 +63,26 @@ class Input extends IO {
 	public void disconnect() {
 		out = new Output();
 	}
+	
+	public String toString(){
+		return "Input[" + ID + "]"; 
+	}
 }
 
 class Output extends IO {
 	States state = States.OFF;
+	final int ID;
+	static int Ocounter = 0;
 
+	public Output() {
+		ID = Ocounter++;
+	}
+	
 	public void setState(States newState) {
 		state = newState;
 	}
 
-//	public void disconnect() {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	public String toString(){
+		return "Output[" + ID + "]"; 
+	}
 }

@@ -95,18 +95,21 @@ public abstract class EComponent {
 
 	public void acceptOutput(EComponent eCompToCheckOutputsOf) {
 		for (int i=0; i <inputs.length; i++){
-			for (int j=0; j <outputs.length; j++){
+			for (int j=0; j <eCompToCheckOutputsOf.outputs.length; j++){
 				if (this.getInputHovers()[i].intersects(eCompToCheckOutputsOf.getOutputHovers()[j])){
-					inputs[i].connect(outputs[j]);
-					say("      " + inputs[i] + " is connected to: " + outputs[j]);
+					inputs[i].connect(eCompToCheckOutputsOf.outputs[j]);
+					say("      " + inputs[i] + " is connected to: " + eCompToCheckOutputsOf.outputs[j]);
 				}
 				else{
 					say("      " + getInputHovers()[i] + " does not intersect: " + eCompToCheckOutputsOf.getOutputHovers()[j]);
 					if (!(eCompToCheckOutputsOf instanceof Wire)){
-						if (inputs[i].isConnectedTo(outputs[j])){
+						if (inputs[i].isConnectedTo(eCompToCheckOutputsOf.outputs[j])){
 							inputs[i].disconnect();
-							say("      " + inputs[i] + " disconnected from " + outputs[j]);
+							say("      " + inputs[i] + " disconnected from " + eCompToCheckOutputsOf.outputs[j]);
 						}
+					}
+					else{
+						say("lookout! It's got a wire!");
 					}
 				}
 			}
