@@ -34,5 +34,9 @@ public abstract class EComponent {
 	abstract void draw(Graphics2D g);
 	
 	abstract boolean checkIfClicked(Point p);
+	
+	public void say(Object x) {
+		System.out.println(x);
+	}
 
 }

@@ -5,7 +5,7 @@ import java.awt.Point;
 public class Switch extends EComponent{
 
 	Output out;
-	private boolean on = false;
+	private States state = States.OFF;
 	
 	public Switch(int x, int y) {
 		
