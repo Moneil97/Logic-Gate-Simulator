@@ -6,40 +6,53 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public abstract class Gate extends EComponent {
-	
-	
 
 	BufferedImage[] images;
 	private final int TOP = 0, BOTTOM = 1;
 	private final int NONE = 0, IN1 = 1, IN2 = 2, BOTH = 3;
-	private boolean[] hovers = { false, false, false };
+	private boolean[] hovers;
 	private float[][] hoverRatios;
 	private float[][] boundsRatios;
 	private Polygon bounds;
+	Rectangle inputHovers[];
+	Rectangle outputHovers[];
+	Gates type;
 
 	public Gate(int x, int y, Gates type) {
-		super(x, y, 600 / 4, 360 / 4, 2, 1);
-		images = ImageTools.getGateImageGroup(type);
+		this(x, y, type, 2, 1);
 	}
+
+	public Gate(int x, int y, Gates type, int inputs, int outputs) {
+		super(x, y, 600 / 4, 360 / 4, inputs, outputs);
+		hovers = new boolean[inputs + outputs];
+		hoverRatios = getHoverRatios();
+		inputHovers = new Rectangle[inputs];
+		outputHovers = new Rectangle[outputs];
+		generateHovers();
+		boundsRatios = getBoundsRatios();
+		generateBounds();
+		images = ImageTools.getGateImageGroup(type);
+		this.type = type;
+	}
+
+	public abstract float[][] getHoverRatios();
+	public abstract float[][] getBoundsRatios();
 
 	@Override
 	void update() {
 		checkHover();
 		States state = calculateState();
 		outputs[0].setState(state);
-		//say(state);
-//		 say(inputs[0] + " " + inputs[0].getState() + " + " + inputs[1] + " " +
-//				 inputs[1].getState() + " = " + outputs[0].state + " " + outputs[0]);
-		// say(this + " " + inputs[top].getState() + " + " +
-		// inputs[bottom].getState() + " = " + outputs[0].state);
+//		annoyingOutput();
+	}
+
+	@SuppressWarnings("unused")
+	private void annoyingOutput() {
+		say(inputs[0] + " " + inputs[0].getState() + " + " + inputs[1] + " "
+	+ inputs[1].getState() + " = " + outputs[0].state + " "+ outputs[0]);
 	}
 
 	abstract States calculateState();
-
-	@Override
-	public void translate(int xOff, int yOff) {
-		super.translate(xOff, yOff);
-	}
 
 	@Override
 	public void drop() {
@@ -49,30 +62,32 @@ public abstract class Gate extends EComponent {
 	}
 
 	public void checkHover() {
-		hovers[0] = inputHovers[TOP].contains(Simulator.mouse);
-		hovers[1] = inputHovers[BOTTOM].contains(Simulator.mouse);
-		hovers[2] = outputHovers[0].contains(Simulator.mouse);
+
+		for (int i = 0; i < inputs.length; i++)
+			hovers[i] = inputHovers[i].contains(Simulator.mouse);
+		// hovers[0] = inputHovers[TOP].contains(Simulator.mouse);
+		// hovers[1] = inputHovers[BOTTOM].contains(Simulator.mouse);
+
+		for (int i = inputs.length, j = 0; j < outputs.length; i++, j++)
+			hovers[i] = outputHovers[j].contains(Simulator.mouse);
+		// hovers[2] = outputHovers[0].contains(Simulator.mouse);
 		// say(Arrays.toString(hovers));
 	}
 
 	@Override
 	void draw(Graphics2D g) {
-		int sub = (inputs[TOP].getState().getBoolean() ? (inputs[BOTTOM].getState().getBoolean() ? BOTH : IN1) : (inputs[BOTTOM].getState()
-				.getBoolean() ? IN2 : NONE));
-		//say(sub);
+		int sub = (inputs[TOP].getState().getBoolean() ? (inputs.length == 1 ? 1 : inputs[BOTTOM].getState().getBoolean() ? BOTH : IN1)
+				: (inputs.length == 1 ? 0 : inputs[BOTTOM].getState().getBoolean() ? IN2 : NONE));
 		g.drawImage(images[sub], x, y, width, height, null);
 		g.setColor(Color.blue);
-		if (hovers[0])
-			g.draw(inputHovers[TOP]);
-		if (hovers[1])
-			g.draw(inputHovers[BOTTOM]);
-		if (hovers[2])
-			g.draw(outputHovers[0]);
-	}
 
-	public void setBoundsRatios(float[][] ratios) {
-		boundsRatios = ratios;
-		generateBounds();
+		for (int i = 0; i < inputs.length; i++)
+			if (hovers[i])
+				g.draw(inputHovers[i]);
+
+		for (int i = inputs.length, j = 0; j < outputs.length; i++, j++)
+			if (hovers[i])
+				g.draw(outputHovers[j]);
 	}
 
 	private void generateBounds() {
@@ -90,41 +105,35 @@ public abstract class Gate extends EComponent {
 		bounds = new Polygon(xs, ys, size);
 	}
 
-	public void setHoverRatios(float[][] ratios) {
-		hoverRatios = ratios;
-		generateHovers();
-	}
-
-	Rectangle inputHovers[] = new Rectangle[2];
-	Rectangle outputHovers[] = new Rectangle[1];
-
 	protected void generateHovers() {
 
-		int size = hoverRatios[0].length;
+		int size = 4; // Rectangle
 
 		int xs[] = new int[size];
 		int ys[] = new int[size];
+		int counter = 0;
 
-		for (int i = 0; i < size; i++) {
-			xs[i] = Math.round(x + hoverRatios[0][i] * width);
-			ys[i] = Math.round(y + hoverRatios[1][i] * height);
+		for (int k = 0; k < inputHovers.length; k++) {
+			for (int i = 0; i < size; i++) {
+				xs[i] = Math.round(x + hoverRatios[counter][i] * width);
+				ys[i] = Math.round(y + hoverRatios[counter + 1][i] * height);
+			}
+
+			counter += 2;
+
+			inputHovers[k] = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
 		}
 
-		inputHovers[TOP] = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
+		for (int k = 0; k < outputHovers.length; k++) {
+			for (int i = 0; i < size; i++) {
+				xs[i] = Math.round(x + hoverRatios[counter][i] * width);
+				ys[i] = Math.round(y + hoverRatios[counter + 1][i] * height);
+			}
 
-		for (int i = 0; i < size; i++) {
-			xs[i] = Math.round(x + hoverRatios[2][i] * width);
-			ys[i] = Math.round(y + hoverRatios[3][i] * height);
+			counter += 2;
+
+			outputHovers[k] = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
 		}
-
-		inputHovers[BOTTOM] = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
-
-		for (int i = 0; i < size; i++) {
-			xs[i] = Math.round(x + hoverRatios[4][i] * width);
-			ys[i] = Math.round(y + hoverRatios[5][i] * height);
-		}
-
-		outputHovers[0] = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
 
 	}
 
@@ -146,46 +155,85 @@ public abstract class Gate extends EComponent {
 }
 
 class AND extends Gate {
-	
+
 	public static int AND_Counter = 0;
 	final int ID;
 
 	public AND(int x, int y) {
 		super(x, y, Gates.AND);
-		setHoverRatios(RatioGroups.AND_GATE_HOVER_RATIOS.getRatioGroup());
-		setBoundsRatios(RatioGroups.AND_GATE_BOUNDS_RATIOS.getRatioGroup());
 		ID = AND_Counter++;
 	}
 
 	@Override
 	States calculateState() {
-		return States.getEnum(inputs[0].getState() == States.ON && inputs[1].getState() == States.ON);
+		return States.getEnum(inputs[0].getState().getBoolean() && inputs[1].getState().getBoolean());
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return "AND[" + ID + "]";
+	}
+
+	@Override
+	public float[][] getHoverRatios() {
+		return RatioGroups.AND_GATE_HOVER_RATIOS.getRatioGroup();
+	}
+
+	@Override
+	public float[][] getBoundsRatios() {
+		return RatioGroups.AND_GATE_BOUNDS_RATIOS.getRatioGroup();
 	}
 
 }
 
 class OR extends Gate {
-	
+
 	public static int OR_Counter = 0;
 	final int ID;
-	
+
 	public OR(int x, int y) {
 		super(x, y, Gates.OR);
-		setHoverRatios(RatioGroups.OR_GATE_HOVER_RATIOS.getRatioGroup());
-		setBoundsRatios(RatioGroups.OR_GATE_BOUNDS_RATIOS.getRatioGroup());
 		ID = OR_Counter++;
 	}
 
 	@Override
 	States calculateState() {
-		return States.getEnum(inputs[0].getState() == States.ON || inputs[1].getState() == States.ON);
+		return States.getEnum(inputs[0].getState().getBoolean() || inputs[1].getState().getBoolean());
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return "OR[" + ID + "]";
 	}
+
+	@Override
+	public float[][] getHoverRatios() {
+		return RatioGroups.OR_GATE_HOVER_RATIOS.getRatioGroup();
+	}
+
+	@Override
+	public float[][] getBoundsRatios() {
+		return RatioGroups.OR_GATE_BOUNDS_RATIOS.getRatioGroup();
+	}
+}
+
+class NOT extends Gate {
+
+	public NOT(int x, int y) {
+		super(x, y, Gates.NOT, 1, 1);
+	}
+
+	@Override
+	States calculateState() {
+		return States.getEnum(!inputs[0].getState().getBoolean());
+	}
+
+	@Override
+	public float[][] getHoverRatios() {
+		return RatioGroups.NOT_GATE_HOVER_RATIOS.getRatioGroup();
+	}
+
+	@Override
+	public float[][] getBoundsRatios() {
+		return RatioGroups.NOT_GATE_BOUNDS_RATIOS.getRatioGroup();
+	}
+
 }

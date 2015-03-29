@@ -26,7 +26,7 @@ public class ImageTools {
 			}
 		
 		counter = 0;
-		for (String s : new String[]{"INPUT_ON", "INPUT_OFF"})
+		for (String s : new String[]{"INPUT_OFF", "INPUT_ON"})
 			try{
 				NOTImages[counter++] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/NOT/NOT_" + s + "_Gate.png"));
 			}catch(Exception e){

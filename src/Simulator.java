@@ -25,11 +25,11 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 		ImageTools.loadImages();
 
-		gates.add(new AND(100, 100));
-		eComps.addAll(gates);
-
-		gates.get(0).inputs[0] = new Input(States.ON);
-		gates.get(0).inputs[1] = new Input(States.ON);
+//		gates.add(new AND(100, 100));
+//		eComps.addAll(gates);
+//
+//		gates.get(0).inputs[0] = new Input(States.ON);
+//		gates.get(0).inputs[1] = new Input(States.ON);
 
 		this.add(panel = new JPanel() {
 			@Override
@@ -91,10 +91,14 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		mouseDraggedLast.setLocation(mouse);
 		mouse = e.getPoint();
 
-		for (Gate gate : gates)
-			if (gate.pickedUp) {
-				gate.translate((mouse.x - mouseDraggedLast.x), (mouse.y - mouseDraggedLast.y));
-			}
+		for (EComponent eComp : eComps)
+			if (eComp.pickedUp)
+				eComp.translate(mouse.x - mouseDraggedLast.x, mouse.y - mouseDraggedLast.y);
+		
+//		for (Gate gate : gates)
+//			if (gate.pickedUp) {
+//				gate.translate((mouse.x - mouseDraggedLast.x), (mouse.y - mouseDraggedLast.y));
+//			}
 	}
 
 	@Override
@@ -168,6 +172,9 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			addGate(new AND(200, 200));
 		} else if (e.getKeyChar() == 'o') {
 			addGate( new OR(200, 200));
+		}
+		else if (e.getKeyChar() == 'n') {
+			addGate(new NOT(200, 200));
 		}
 		else if (e.getKeyChar() == 's') {
 			eComps.add(new Switch(mouse.x, mouse.y));

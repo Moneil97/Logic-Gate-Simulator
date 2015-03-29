@@ -38,7 +38,20 @@ public enum Ratios {
 
 	OR_GATE_OUTPUT_X_RATIOS(new float[] { 0.8245161f, 0.99935484f, 0.9987097f, 0.8232258f }),
 
-	OR_GATE_OUTPUT_Y_RATIOS(new float[] { 0.4330413f, 0.4330413f, 0.5694618f, 0.5694618f });
+	OR_GATE_OUTPUT_Y_RATIOS(new float[] { 0.4330413f, 0.4330413f, 0.5694618f, 0.5694618f }),
+
+	// NOT
+	NOT_GATE_BOUNDS_X_RATIOS(new float[] { 0.21166892f, 0.2109905f, 0.22862957f, 0.6906377f, 0.22862957f }),
+
+	NOT_GATE_BOUNDS_Y_RATIOS(new float[] { 0.0f, 1.0f, 1.0012516f, 0.49812266f, 0.0f }),
+
+	NOT_GATE_INPUT_X_RATIOS(new float[] { 0.0f, 0.21031208f, 0.21031208f, 0.0f }),
+
+	NOT_GATE_INPUT_Y_RATIOS(new float[] { 0.41426784f, 0.41301626f, 0.5932416f, 0.5944931f }),
+
+	NOT_GATE_OUTPUT_X_RATIOS(new float[] { 0.7876527f, 1.0f, 1.0f, 0.7876527f }),
+
+	NOT_GATE_OUTPUT_Y_RATIOS(new float[] { 0.42803505f, 0.4292866f, 0.57571965f, 0.57697123f });
 
 	private float[] ratio;
 
@@ -64,7 +77,12 @@ enum RatioGroups {
 			Ratios.OR_GATE_BOTTOM_INPUT_X_RATIOS.getRatio(), Ratios.OR_GATE_BOTTOM_INPUT_Y_RATIOS.getRatio(),
 			Ratios.OR_GATE_OUTPUT_X_RATIOS.getRatio(), Ratios.OR_GATE_OUTPUT_Y_RATIOS.getRatio() }),
 
-	OR_GATE_BOUNDS_RATIOS(new float[][] { Ratios.OR_GATE_BOUNDS_X_RATIOS.getRatio(), Ratios.OR_GATE_BOUNDS_Y_RATIOS.getRatio() });
+	OR_GATE_BOUNDS_RATIOS(new float[][] { Ratios.OR_GATE_BOUNDS_X_RATIOS.getRatio(), Ratios.OR_GATE_BOUNDS_Y_RATIOS.getRatio() }),
+
+	NOT_GATE_HOVER_RATIOS(new float[][] { Ratios.NOT_GATE_INPUT_X_RATIOS.getRatio(), Ratios.NOT_GATE_INPUT_Y_RATIOS.getRatio(),
+			Ratios.NOT_GATE_OUTPUT_X_RATIOS.getRatio(), Ratios.NOT_GATE_OUTPUT_Y_RATIOS.getRatio() }),
+
+	NOT_GATE_BOUNDS_RATIOS(new float[][] { Ratios.NOT_GATE_BOUNDS_X_RATIOS.getRatio(), Ratios.NOT_GATE_BOUNDS_Y_RATIOS.getRatio() });
 
 	private float[][] ratioGroup;
 

@@ -6,9 +6,11 @@ public class Switch extends EComponent {
 
 	private Output out;
 	private States state = States.OFF;
+	private Rectangle bounds;
 
 	public Switch(int x, int y) {
-		super(x, y, 50, 50, 0, 1);
+		super(x, y, 95, 28, 0, 1);
+		bounds = new Rectangle(x,y,50,50);
 	}
 
 	public States getState() {
@@ -21,7 +23,7 @@ public class Switch extends EComponent {
 
 	@Override
 	void update() {
-
+		
 	}
 
 	@Override
@@ -31,22 +33,27 @@ public class Switch extends EComponent {
 
 	@Override
 	boolean checkIfClicked(Point p) {
-		return false;
+		return bounds.contains(p);
 	}
 
 	public void toggle() {
 		state = States.getEnum(!state.getBoolean());
 	}
+	
+	@Override
+	public void translate(int xOff, int yOff) {
+		super.translate(xOff, yOff);
+		
+		bounds.translate(xOff, yOff);
+	}
 
 	@Override
 	Rectangle[] getInputHovers() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	Rectangle[] getOutputHovers() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
