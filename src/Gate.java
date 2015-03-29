@@ -39,8 +39,7 @@ public abstract class Gate extends EComponent {
 	@Override
 	void update() {
 		checkHover();
-		States state = calculateState();
-		outputs[0].setState(state);
+		outputs[0].setState(calculateState());
 //		annoyingOutput();
 	}
 
@@ -257,6 +256,7 @@ class XOR extends Gate{
 	
 	@Override
 	States calculateState() {
+		say(inputs[0].getState() + " + " + inputs[1].getState() + " = " + States.getEnum(inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean()));
 		return States.getEnum(inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean());
 	}
 

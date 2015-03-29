@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -111,6 +112,24 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		
+		if (creator != null){
+			for (EComponent eComp : eComps){
+				for (int i=0; i < eComp.getInputHovers().length; i++){
+					if (eComp.getInputHovers()[i].contains(mouse))
+						creator.setInput(eComp.inputs[i]);
+				}
+				for (int i=0; i < eComp.getOutputHovers().length; i++){
+					if (eComp.getOutputHovers()[i].contains(mouse))
+						creator.setOutput(eComp.outputs[i]);
+				}
+			}
+			if (creator.in != null && creator.out != null){
+				creator.create();
+				creator = null;
+			}
+		}
+		
 		for (EComponent eComp : eComps)
 			if (eComp.checkIfClicked(e.getPoint())) {
 				eComp.pickup();
@@ -161,6 +180,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mouseExited(MouseEvent e) {}
+	
+	private WireCreator creator;
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -174,6 +195,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			addGate(new XOR(mouse.x, mouse.y));
 		} else if (e.getKeyChar() == 's') {
 			addSwitch(new Switch(mouse.x, mouse.y));
+		}else if (e.getKeyChar() == 'c') {
+			creator = new WireCreator();
 		} else
 			say(e.getKeyChar() + " " + e.getKeyCode());
 
