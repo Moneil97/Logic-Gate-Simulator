@@ -33,6 +33,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				Graphics2D g = (Graphics2D) g1;
 				for (EComponent eComp : eComps)
 					eComp.draw(g);
+				for (Wire wire : wires)
+					wire.draw(g);
 			}
 		});
 		panel.setBackground(Color.white);
@@ -119,12 +121,16 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		if (creator != null){
 			for (EComponent eComp : eComps){
 				for (int i=0; i < eComp.getInputHovers().length; i++){
-					if (eComp.getInputHovers()[i].contains(mouse))
+					if (eComp.getInputHovers()[i].contains(mouse)){
 						creator.setInput(eComp.inputs[i]);
+						creator.setInputParent(eComp);
+					}
 				}
 				for (int i=0; i < eComp.getOutputHovers().length; i++){
-					if (eComp.getOutputHovers()[i].contains(mouse))
+					if (eComp.getOutputHovers()[i].contains(mouse)){
 						creator.setOutput(eComp.outputs[i]);
+						creator.setOutputParent(eComp);
+					}
 				}
 			}
 			if (creator.in != null && creator.out != null){

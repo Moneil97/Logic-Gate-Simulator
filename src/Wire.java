@@ -5,28 +5,28 @@ import java.awt.Rectangle;
 
 public class Wire extends EComponent {
 
-//	public Wire(int x, int y) {
-//		super(x, y, 0, 0, 1, 1);
-//	}
-	
-	public Wire(Input in, Output out) {
+	EComponent inputParent;
+	EComponent outputParent;
+
+	public Wire(Input in, Output out, EComponent inputParent, EComponent outputParent) {
 		super(0, 0, 0, 0, 1, 1);
 		in.connect(outputs[0]);
 		inputs[0].connect(out);
-		
+		this.inputParent = inputParent;
+		this.outputParent = outputParent;
 	}
 
 	@Override
 	void update() {
 		outputs[0].setState(inputs[0].getState());
-		
 		say("      " + inputs[0] + "(" + inputs[0].getOut() + ")   -->  " + outputs[0] + "(" + outputs[0].getState());
 	}
 
 	@Override
 	void draw(Graphics2D g) {
 		g.setStroke(new BasicStroke(5));
-		g.drawLine(x, y, x + width, x + height);
+		g.drawLine(inputParent.getX(), inputParent.getY() + inputParent.getHeight() / 2, outputParent.getX() + outputParent.getWidth(),
+				outputParent.getY() + outputParent.getHeight() / 2);
 	}
 
 	@Override
@@ -49,39 +49,36 @@ public class Wire extends EComponent {
 
 }
 
-class WireCreator{
-	
-	Point start, end;
+class WireCreator {
+
 	Input in;
 	Output out;
-	
-	public WireCreator(){
-//		start = new Point();
-//		end = new Point();
+	EComponent parent1, parent2;
+
+	public WireCreator() {
 		System.out.println("Started");
 	}
-	
-	void setStartPoint(Point p){
-		System.out.println("start set");
-		start.setLocation(p);
-	}
-	
-	void setEndPoint(Point p){
-		System.out.println("set end");
-		end.setLocation(p);
-	}
-	
-	void setInput(Input in){
+
+
+	void setInput(Input in) {
 		this.in = in;
 	}
-	
-	void setOutput(Output out){
+
+	void setOutput(Output out) {
 		this.out = out;
 	}
-	
-	Wire create(){
+
+	Wire create() {
 		System.out.println(in + "paired with " + out);
-		return new Wire(in, out);
+		return new Wire(in, out, parent1, parent2);
 	}
-	
+
+	public void setInputParent(EComponent eComp) {
+		parent1 = eComp;
+	}
+
+	public void setOutputParent(EComponent eComp) {
+		parent2 = eComp;
+	}
+
 }
