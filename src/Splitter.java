@@ -3,38 +3,37 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 
-public class Spliter extends EComponent{
+public class Splitter extends EComponent{
 
-	public Spliter() {
-		// TODO Auto-generated constructor stub
+	public Splitter(int x, int y) {
+		super(x,y,0,0,1,2);
 	}
 
 	@Override
 	void update() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	void draw(Graphics2D g) {
-		// TODO Auto-generated method stub
-		
+		g.drawImage(ImageTools.SPLITTER, x, y, null);
 	}
 
 	@Override
 	boolean checkIfClicked(Point p) {
+		System.err.println("not implemented");
 		return false;
 	}
 
 	@Override
 	Rectangle[] getInputHovers() {
-		// TODO Auto-generated method stub
+		System.err.println("not implemented");
 		return null;
 	}
 
 	@Override
 	Rectangle[] getOutputHovers() {
-		// TODO Auto-generated method stub
+		System.err.println("not implemented");
 		return null;
 	}
 
