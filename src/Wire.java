@@ -1,46 +1,37 @@
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.Arrays;
 
 public class Wire extends EComponent {
 
 	final EComponent inputParent;
 	final EComponent outputParent;
-	int inputCenter = 0;
-	int outputCenter = 0;
+	final int inputCenter;
+	final int outputCenter;
 	
-	public Wire(EComponent inputParent, EComponent outputParent, int i, int j) {
+	public Wire(EComponent inputParent, EComponent outputParent, int inputSub, int outputSub) {
 		super(0, 0, 0, 0, 1, 1);
-		inputParent.inputs[i].connect(outputs[0]);
-		inputs[0].connect(outputParent.outputs[j]);
+		inputParent.inputs[inputSub].connect(outputs[0]);
+		inputs[0].connect(outputParent.outputs[outputSub]);
 		this.inputParent = inputParent;
 		this.outputParent = outputParent;
 		
 		if (inputParent instanceof Gate){
-			float[] inputYRatios = RatioGroups.getHoverRatioGroup(Gates.getValue(inputParent))[1+(i*2)];
-			inputCenter = Math.round(inputParent.getHeight()*(inputYRatios[1] + inputYRatios[2])/2.0f);
-			say(Arrays.toString(inputYRatios));
+			Rectangle rect = inputParent.getInputHovers()[inputSub];
+			inputCenter = Math.round(rect.y -inputParent.getY() + rect.height/2);
 		}
-		else if (inputParent instanceof Switch){
+		else{
 			inputCenter = inputParent.height/2;
 		}
-		else{
-			
-		}
-		
 		
 		if (outputParent instanceof Gate){
-			float[] outputYRatios = RatioGroups.getHoverRatioGroup(Gates.getValue(outputParent))[1+(j+inputParent.inputs.length)*2];
-			outputCenter =  Math.round(outputParent.getHeight()*((outputYRatios[1] + outputYRatios[2])/2.0f));
-			say(Arrays.toString(outputYRatios));
-		}
-		else if (outputParent instanceof Switch){
-			outputCenter = outputParent.height/2;
+			Rectangle rect = outputParent.getOutputHovers()[outputSub];
+			outputCenter = Math.round(rect.y -outputParent.getY() + rect.height/2);
 		}
 		else{
-			
+			outputCenter = outputParent.height/2;
 		}
 		
 	}
@@ -55,7 +46,7 @@ public class Wire extends EComponent {
 	void draw(Graphics2D g) {
 		g.setStroke(new BasicStroke(5));
 		
-		
+		g.setColor(outputs[0].getState().getBoolean() ?  Color.yellow: Color.black);
 		
 		g.drawLine(inputParent.getX(), inputParent.getY() + inputCenter, outputParent.getX() + outputParent.getWidth(),
 				outputParent.getY() + outputCenter);
@@ -83,28 +74,16 @@ public class Wire extends EComponent {
 
 class WireCreator {
 
-//	Input in;
-//	Output out;
 	EComponent parent1, parent2;
-private int i;
-private int j;
+	private int i;
+	private int j;
 
 	public WireCreator() {
 		System.out.println("Started");
 	}
 
-
-//	void setInput(Input in) {
-//		this.in = in;
-//	}
-//
-//	void setOutput(Output out) {
-//		this.out = out;
-//	}
-
 	Wire create() {
-		//System.out.println(in + "paired with " + out);
-		return new Wire(/*in, out, */parent1, parent2, i, j);
+		return new Wire(parent1, parent2, i, j);
 	}
 
 	public void setInputParent(EComponent eComp, int i) {
