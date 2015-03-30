@@ -106,7 +106,7 @@ public abstract class Gate extends EComponent {
 				g.draw(outputHovers[j]);
 	}
 
-	private void generateBounds() {
+	protected void generateBounds() {
 
 		int size = boundsRatios[0].length;
 

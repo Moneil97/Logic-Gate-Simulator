@@ -7,11 +7,11 @@ public enum Ratios {
 	AND_GATE_BOUNDS_Y_RATIOS(new float[] { 0.0f, 0.99749684f, 0.99499375f, 0.9586984f, 0.8760951f, 0.7684606f, 0.62578225f, 0.5206508f,
 			0.4580726f, 0.3279099f, 0.20650813f, 0.10888611f, 0.03128911f, 0.0f }),
 
-	AND_GATE_TOP_INPUT_X_RATIOS(new float[] { 0.0f, 0.18f, 0.18f, 0.0f }),//0
+	AND_GATE_TOP_INPUT_X_RATIOS(new float[] { 0.0f, 0.18f, 0.18f, 0.0f }), // 0
 
-	AND_GATE_TOP_INPUT_Y_RATIOS(new float[] { 0.13f, 0.13f, 0.4f, 0.4f }),//1
+	AND_GATE_TOP_INPUT_Y_RATIOS(new float[] { 0.13f, 0.13f, 0.4f, 0.4f }), // 1
 
-	AND_GATE_BOTTOM_INPUT_X_RATIOS(new float[] { 0.0f, 0.18f, 0.18f, 0.0f }),//2
+	AND_GATE_BOTTOM_INPUT_X_RATIOS(new float[] { 0.0f, 0.18f, 0.18f, 0.0f }), // 2
 
 	AND_GATE_BOTTOM_INPUT_Y_RATIOS(new float[] { 0.6f, 0.6f, 0.85f, 0.85f }),
 
@@ -53,7 +53,7 @@ public enum Ratios {
 
 	NOT_GATE_OUTPUT_Y_RATIOS(new float[] { 0.42803505f, 0.4292866f, 0.57571965f, 0.57697123f }),
 
-	// OR
+	// XOR
 	XOR_GATE_BOUNDS_X_RATIOS(new float[] { 0.14882943f, 0.18784839f, 0.21906355f, 0.23411371f, 0.23076923f, 0.21850613f, 0.19119287f,
 			0.1477146f, 0.42196208f, 0.50222963f, 0.5613155f, 0.6237458f, 0.6761427f, 0.72185063f, 0.74749166f, 0.74860644f, 0.70624304f,
 			0.6510591f, 0.5908584f, 0.5100334f, 0.44816053f }),
@@ -72,7 +72,12 @@ public enum Ratios {
 
 	XOR_GATE_OUTPUT_X_RATIOS(new float[] { 0.74860644f, 1.0f, 1.0f, 0.74693424f }),
 
-	XOR_GATE_OUTPUT_Y_RATIOS(new float[] { 0.42105263f, 0.42230576f, 0.57894737f, 0.57769424f });
+	XOR_GATE_OUTPUT_Y_RATIOS(new float[] { 0.42105263f, 0.42230576f, 0.57894737f, 0.57769424f }),
+
+	//Splitter
+	SPLITTER_GATE_INPUT_X_RATIOS(new float[] { 7.5075077E-4f, 0.253003f, 0.25375375f, 7.5075077E-4f }),
+
+	SPLITTER_GATE_INPUT_Y_RATIOS(new float[] { 0.41301626f, 0.41301626f, 0.58698374f, 0.58573216f });
 
 	private float[] ratio;
 
@@ -120,12 +125,16 @@ enum RatioGroups {
 	float[][] getRatioGroup() {
 		return ratioGroup;
 	}
-	
-	public static float[][] getHoverRatioGroup(Gates type){
-		if (type == Gates.AND) return AND_GATE_HOVER_RATIOS.getRatioGroup();
-		if (type == Gates.OR)  return OR_GATE_HOVER_RATIOS.getRatioGroup();
-		if (type == Gates.NOT) return NOT_GATE_HOVER_RATIOS.getRatioGroup();
-		if (type == Gates.XOR) return XOR_GATE_HOVER_RATIOS.getRatioGroup();
+
+	public static float[][] getHoverRatioGroup(Gates type) {
+		if (type == Gates.AND)
+			return AND_GATE_HOVER_RATIOS.getRatioGroup();
+		if (type == Gates.OR)
+			return OR_GATE_HOVER_RATIOS.getRatioGroup();
+		if (type == Gates.NOT)
+			return NOT_GATE_HOVER_RATIOS.getRatioGroup();
+		if (type == Gates.XOR)
+			return XOR_GATE_HOVER_RATIOS.getRatioGroup();
 		System.err.println("Could not find ratio group");
 		return null;
 	}
