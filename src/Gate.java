@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 public abstract class Gate extends EComponent {
 
@@ -45,13 +46,13 @@ public abstract class Gate extends EComponent {
 
 	@SuppressWarnings("unused")
 	private void annoyingOutput() {
-		if (inputs.length > 1)
+		/*if (inputs.length > 1)
 			say(inputs[0] + " " + inputs[0].getState() + " + " + inputs[1] + " "
 					+ inputs[1].getState() + " == " + outputs[0].getState() + " "+ outputs[0]
 					+ "                 "+
 					inputs[0].getOut() + inputs[0].getOut().getState() + "  +  " + inputs[1].getOut() + (inputs[1].getOut().getState()));
 		else
-			say(inputs[0] + " " + inputs[0].getState() + " --> " + outputs[0].getState() + " "+ outputs[0]);
+			say(inputs[0] + " " + inputs[0].getState() + " --> " + outputs[0].getState() + " "+ outputs[0]);*/
 	}
 
 	abstract States calculateState();
@@ -104,6 +105,10 @@ public abstract class Gate extends EComponent {
 		for (int i = inputs.length, j = 0; j < outputs.length; i++, j++)
 			if (hovers[i])
 				g.draw(outputHovers[j]);
+		
+		g.setColor(Color.blue);
+		g.drawString(Arrays.toString(inputs), x,y);
+		g.drawString(Arrays.toString(outputs), x+width/2, y+height);
 	}
 
 	protected void generateBounds() {

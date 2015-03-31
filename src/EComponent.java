@@ -112,7 +112,7 @@ public abstract class EComponent {
 					if (!(eCompToCheckOutputsOf instanceof Wire)) {
 						if (inputs[i].isConnectedTo(eCompToCheckOutputsOf.outputs[j])) {
 							
-							inputs[i].disconnect();
+							inputs[i].disconnect(eCompToCheckOutputsOf.outputs[j]);
 							say("      " + inputs[i] + " disconnected from " + eCompToCheckOutputsOf.outputs[j]);
 						}
 					} else {
@@ -135,7 +135,7 @@ public abstract class EComponent {
 					if (!(eCompToCheckInputsOf instanceof Wire)) {
 						if (inputs[j].isConnectedTo(outputs[i])) {
 							say("class: " + eCompToCheckInputsOf.getClass());
-							inputs[j].disconnect();
+							inputs[j].disconnect(outputs[i]);
 							say("      " + inputs[j] + " disconnected from " + outputs[i]);
 						}
 					} else {
