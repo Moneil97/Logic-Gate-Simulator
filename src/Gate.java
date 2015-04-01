@@ -76,6 +76,7 @@ public abstract class Gate extends EComponent {
 			inputHovers[i].translate(xOff, yOff);
 		for (int i=0; i < outputHovers.length; i++)
 			outputHovers[i].translate(xOff, yOff);
+	
 	}
 
 	public void checkHover() {
@@ -266,7 +267,7 @@ class XOR extends Gate{
 	
 	@Override
 	States calculateState() {
-		say(inputs[0].getState() + " + " + inputs[1].getState() + " = " + States.getEnum(inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean()));
+		//say(inputs[0].getState() + " + " + inputs[1].getState() + " = " + States.getEnum(inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean()));
 		return States.getEnum(inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean());
 	}
 

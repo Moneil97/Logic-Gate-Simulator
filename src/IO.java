@@ -83,12 +83,13 @@ class Input{
 class Output{
 	private States state = States.OFF;
 	private final int ID;
+	static int Ocounter = 0;
 	
 	public States getState() {
 		return state;
 	}
 
-	static int Ocounter = 0;
+	
 
 	public Output() {
 		ID = Ocounter++;
