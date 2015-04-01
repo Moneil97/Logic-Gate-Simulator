@@ -35,6 +35,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					eComp.draw(g);
 				for (Wire wire : wires)
 					wire.draw(g);
+				if (creator != null)
+					creator.draw(g, mouse);
 			}
 		});
 		panel.setBackground(Color.white);
@@ -128,7 +130,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					if (eComp.getOutputHovers()[i].contains(mouse))
 						creator.setOutputParent(eComp, i);
 			}
-			if (creator.parent1 != null && creator.parent2 != null){
+			if (creator.inputParent != null && creator.outputParent != null){
 				wires.add(creator.create());
 				creator = null;
 			}

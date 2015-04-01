@@ -74,26 +74,58 @@ public class Wire extends EComponent {
 
 class WireCreator {
 
-	EComponent parent1, parent2;
+	EComponent inputParent, outputParent;
 	private int i;
 	private int j;
+	private int centerInput;
+	private int centerOutput;
 
 	public WireCreator() {
 		System.out.println("Started");
 	}
 
 	Wire create() {
-		return new Wire(parent1, parent2, i, j);
+		return new Wire(inputParent, outputParent, i, j);
 	}
 
 	public void setInputParent(EComponent eComp, int i) {
 		this.i = i;
-		parent1 = eComp;
+		inputParent = eComp;
+		
+		if (inputParent instanceof Gate){
+			Rectangle rect = inputParent.getInputHovers()[i];
+			centerInput = Math.round(rect.y -inputParent.getY() + rect.height/2);
+		}
+		else{
+			centerInput = inputParent.height/2;
+		}
 	}
 
 	public void setOutputParent(EComponent eComp, int j) {
 		this.j = j;
-		parent2 = eComp;
+		outputParent = eComp;
+		
+		if (outputParent instanceof Gate){
+			Rectangle rect = outputParent.getOutputHovers()[j];
+			centerOutput = Math.round(rect.y -outputParent.getY() + rect.height/2);
+		}
+		else{
+			centerOutput = outputParent.height/2;
+		}
+	}
+	
+	public void draw(Graphics2D g, Point mouse){
+		
+		if (inputParent != null){
+			g.setStroke(new BasicStroke(5));
+			g.setColor(Color.black);
+			g.drawLine(inputParent.getX(), inputParent.getY() + centerInput, mouse.x, mouse.y);
+		}else if (outputParent!= null){
+			g.setStroke(new BasicStroke(5));
+			g.setColor(outputParent.outputs[0].getState().getBoolean() ?  Color.yellow: Color.black);
+			g.drawLine(outputParent.getX() + outputParent.getWidth(), outputParent.getY() + centerOutput, mouse.x, mouse.y);
+		}
+
 	}
 
 }
