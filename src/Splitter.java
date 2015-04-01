@@ -23,7 +23,7 @@ public class Splitter extends Gate{
 	
 	@Override
 	void draw(Graphics2D g) {
-		g.drawImage(ImageTools.SPLITTER, x, y,width, height, null);
+		//g.drawImage(ImageTools.SPLITTER, x, y,width, height, null);
 	}
 
 	@Override

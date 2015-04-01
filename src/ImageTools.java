@@ -13,7 +13,8 @@ public class ImageTools {
 	private static final BufferedImage[] XORImages = new BufferedImage[4];
 	public static BufferedImage ON;
 	public static BufferedImage OFF;
-	public static BufferedImage SPLITTER;
+	//public static BufferedImage SPLITTER;
+	static BufferedImage HUB;
 	public static final int GATE_WIDTH = 600 / 4, GATE_HEIGHT = 360 / 4;
 
 	public static void loadImages() {
@@ -39,9 +40,10 @@ public class ImageTools {
 		try {
 			ON = ImageIO.read(ImageTools.class.getResourceAsStream("/images/SWITCH/ON.png"));
 			OFF = ImageIO.read(ImageTools.class.getResourceAsStream("/images/SWITCH/OFF.png"));
-			SPLITTER = ImageIO.read(ImageTools.class.getResourceAsStream("/images/SPLITTER/Splitter.png"));
+			//SPLITTER = ImageIO.read(ImageTools.class.getResourceAsStream("/images/SPLITTER/Splitter.png"));
+			HUB = ImageIO.read(ImageTools.class.getResourceAsStream("/images/HUB/HUB.png"));
 		} catch (Exception e) {
-			SPLITTER = ON = OFF = getDefaultImage(new Dimension(GATE_WIDTH, GATE_HEIGHT));
+			HUB = ON = OFF = getDefaultImage(new Dimension(GATE_WIDTH, GATE_HEIGHT));
 			e.printStackTrace();
 		}
 	}

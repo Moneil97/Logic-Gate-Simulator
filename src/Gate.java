@@ -12,18 +12,22 @@ public abstract class Gate extends EComponent {
 	private final int TOP = 0, BOTTOM = 1;
 	private final int NONE = 0, IN1 = 1, IN2 = 2, BOTH = 3;
 	private boolean[] hovers;
-	private float[][] hoverRatios;
-	private float[][] boundsRatios;
+	protected float[][] hoverRatios;
+	protected float[][] boundsRatios;
 	private Polygon bounds;
-	private Rectangle inputHovers[];
-	private Rectangle outputHovers[];
+	protected Rectangle inputHovers[];
+	protected Rectangle outputHovers[];
 
 	public Gate(int x, int y, Gates type) {
 		this(x, y, type, 2, 1);
 	}
 
 	public Gate(int x, int y, Gates type, int inputs, int outputs) {
-		super(x, y, 600 / 4, 360 / 4, inputs, outputs);
+		this(x, y, 600 / 4, 360 / 4, type, inputs, outputs);
+	}
+	
+	public Gate(int x, int y,int width, int height, Gates type, int inputs, int outputs) {
+		super(x, y, width, height, inputs, outputs);
 		hovers = new boolean[inputs + outputs];
 		hoverRatios = getHoverRatios();
 		inputHovers = new Rectangle[inputs];

@@ -83,10 +83,13 @@ public enum Ratios {
 
 	SPLITTER_GATE_TOP_OUTPUT_Y_RATIOS(new float[] { -0.08355795f, -0.08355795f, 0.08355795f, 0.08355795f}),
 	
-	SPLITTER_GATE_BOTTOM_OUTPUT_X_RATIOS(new float[] { 0.5169903f, 1.0f, 1.0008091f, 0.51618123f});
+	SPLITTER_GATE_BOTTOM_OUTPUT_X_RATIOS(new float[] { 0.5169903f, 1.0f, 1.0008091f, 0.51618123f}),
 
 	//SPLITTER_GATE_BOTTOM_OUTPUT_Y_RATIOS(new float[] { -0.08355795f, -0.08355795f, 0.08355795f, 0.08355795f});
 
+	HUB_BOUNDS_X_RATIOS(new float[] {0,1,1,0}),
+	
+	HUB_BOUNDS_Y_RATIOS(new float[] {0,0,1,1});
 	
 	private float[] ratio;
 
@@ -123,7 +126,9 @@ enum RatioGroups {
 			Ratios.XOR_GATE_BOTTOM_INPUT_X_RATIOS.getRatio(), Ratios.XOR_GATE_BOTTOM_INPUT_Y_RATIOS.getRatio(),
 			Ratios.XOR_GATE_OUTPUT_X_RATIOS.getRatio(), Ratios.XOR_GATE_OUTPUT_Y_RATIOS.getRatio() }),
 
-	XOR_GATE_BOUNDS_RATIOS(new float[][] { Ratios.XOR_GATE_BOUNDS_X_RATIOS.getRatio(), Ratios.XOR_GATE_BOUNDS_Y_RATIOS.getRatio() });
+	XOR_GATE_BOUNDS_RATIOS(new float[][] { Ratios.XOR_GATE_BOUNDS_X_RATIOS.getRatio(), Ratios.XOR_GATE_BOUNDS_Y_RATIOS.getRatio() }),
+	
+	HUB_BOUNDS_RATIOS(new float[][] { Ratios.HUB_BOUNDS_X_RATIOS.getRatio(), Ratios.HUB_BOUNDS_Y_RATIOS.getRatio()});
 
 	private float[][] ratioGroup;
 
@@ -144,6 +149,8 @@ enum RatioGroups {
 			return NOT_GATE_HOVER_RATIOS.getRatioGroup();
 		if (type == Gates.XOR)
 			return XOR_GATE_HOVER_RATIOS.getRatioGroup();
+		if (type == Gates.HUB)
+			return HUB_BOUNDS_RATIOS.getRatioGroup();
 		System.err.println("Could not find ratio group");
 		return null;
 	}

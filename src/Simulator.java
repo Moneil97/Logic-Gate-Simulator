@@ -203,6 +203,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			eComps.add(new Splitter(mouse.x, mouse.y));
 		}else if (e.getKeyChar() == 'c') {
 			creator = new WireCreator();
+		}else if (e.getKeyChar() == 'h') {
+			eComps.add(new Hub(mouse.x, mouse.y));
 		} else
 			say(e.getKeyChar() + " " + e.getKeyCode());
 
