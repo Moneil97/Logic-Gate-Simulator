@@ -33,6 +33,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					eComp.draw(g);
 				for (Wire wire : wires)
 					wire.draw(g);
+				for (UserLabel label : labels)
+					label.draw(g);
 				if (creator != null)
 					creator.draw(g, mouse);
 			}
@@ -93,10 +95,17 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		dragged = true;
 		mouseDraggedLast.setLocation(mouse);
 		mouse = e.getPoint();
+		
+		int xOff = mouse.x - mouseDraggedLast.x;
+		int yOff = mouse.y - mouseDraggedLast.y;
+		
+		for (UserLabel label : labels)
+			if (label.isPickedUp())
+				label.translate(xOff, yOff);
 
 		for (EComponent eComp : eComps)
 			if (eComp.isPickedUp())
-				eComp.translate(mouse.x - mouseDraggedLast.x, mouse.y - mouseDraggedLast.y);
+				eComp.translate(xOff, yOff);
 	}
 
 	@Override
@@ -139,6 +148,12 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				eComp.pickup();
 				break;
 			}
+		
+		for (UserLabel label : labels)
+			if (label.checkIfClicked(e.getPoint())){
+				label.pickUp();
+				break;
+			}
 	}
 
 	@Override
@@ -168,14 +183,22 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 						}
 					}
 				}
+			for (UserLabel label : labels)
+				if (label.isPickedUp()){
+					label.drop();
+				}
 			dragged = false;
 		} else {
 			
 			for (EComponent eComp : eComps)
-				if (eComp.checkIfClicked(e.getPoint())) {
+				if (eComp.isPickedUp()) {
 					if (eComp instanceof Switch)
 						((Switch) eComp).toggle();
 					eComp.drop();
+				}
+			for (UserLabel label : labels)
+				if (label.isPickedUp()){
+					label.drop();
 				}
 		}
 
@@ -188,6 +211,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	public void mouseExited(MouseEvent e) {}
 	
 	private WireCreator creator;
+	private ArrayList<UserLabel> labels = new ArrayList<UserLabel>();;
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -209,6 +233,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			eComps.add(new Hub(mouse.x, mouse.y));
 		}else if (e.getKeyChar() == 'l') {
 			eComps.add(new LCD(mouse.x, mouse.y));
+		}else if (e.getKeyChar() == 't') {
+			labels.add(new UserLabel(mouse.x, mouse.y));
 		} else
 			say(e.getKeyChar() + " " + e.getKeyCode());
 
