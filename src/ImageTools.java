@@ -15,6 +15,7 @@ public class ImageTools {
 	public static BufferedImage OFF;
 	//public static BufferedImage SPLITTER;
 	static BufferedImage HUB;
+	static BufferedImage LCD_ON, LCD_OFF;
 	public static final int GATE_WIDTH = 600 / 4, GATE_HEIGHT = 360 / 4;
 
 	public static void loadImages() {
@@ -42,8 +43,9 @@ public class ImageTools {
 			OFF = ImageIO.read(ImageTools.class.getResourceAsStream("/images/SWITCH/OFF.png"));
 			//SPLITTER = ImageIO.read(ImageTools.class.getResourceAsStream("/images/SPLITTER/Splitter.png"));
 			HUB = ImageIO.read(ImageTools.class.getResourceAsStream("/images/HUB/HUB.png"));
+			LCD_ON = ImageIO.read(ImageTools.class.getResourceAsStream("/images/LCD/LCD_ON.png"));
+			LCD_OFF = ImageIO.read(ImageTools.class.getResourceAsStream("/images/LCD/LCD_OFF.png"));
 		} catch (Exception e) {
-			HUB = ON = OFF = getDefaultImage(new Dimension(GATE_WIDTH, GATE_HEIGHT));
 			e.printStackTrace();
 		}
 	}

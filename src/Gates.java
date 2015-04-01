@@ -1,5 +1,5 @@
 public enum Gates {
-	AND, OR, NOT, XOR, SPLITTER, HUB;
+	AND, OR, NOT, XOR, SPLITTER, HUB, LCD;
 	
 	public static Gates getValue(EComponent c){
 		if (c instanceof AND) return AND;

@@ -1,41 +1,52 @@
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
 
+public class LCD extends Gate{
 
-public class LCD extends EComponent{
-
-	public LCD() {
-		// TODO Auto-generated constructor stub
+	public LCD(int x, int y) {
+		super(x, y, 100, 100, Gates.LCD, 1, 0);
 	}
-
+	
 	@Override
 	void update() {
-		// TODO Auto-generated method stub
-		
+		checkHover();
 	}
-
+	
 	@Override
 	void draw(Graphics2D g) {
-		// TODO Auto-generated method stub
-		
+		g.drawImage((inputs[0].getState().getBoolean() ? ImageTools.LCD_ON: ImageTools.LCD_OFF), x, y, width, height, null);
+	}
+	
+	@Override
+	protected void generateHovers() {
+		int size = 4; // Rectangle
+
+		int xs[] = new int[size];
+		int ys[] = new int[size];
+
+		for (int i = 0; i < size; i++) {
+			xs[i] = Math.round(x + hoverRatios[0][i] * width);
+			ys[i] = Math.round(y + hoverRatios[1][i] * height);
+		}
+
+		inputHovers[0] = new Rectangle(xs[0], ys[0], xs[1] - xs[0], ys[2] - ys[1]);
 	}
 
 	@Override
-	boolean checkIfClicked(Point p) {
-		return false;
+	public float[][] getBoundsRatios() {
+		return RatioGroups.LCD_BOUNDS_RATIOS.getRatioGroup();
 	}
 
 	@Override
-	Rectangle[] getInputHovers() {
-		// TODO Auto-generated method stub
-		return null;
+	public float[][] getHoverRatios() {
+		return RatioGroups.LCD_BOUNDS_RATIOS.getRatioGroup();
 	}
 
 	@Override
-	Rectangle[] getOutputHovers() {
-		// TODO Auto-generated method stub
-		return null;
+	States calculateState() {
+		return inputs[0].getState();
 	}
+
+
 
 }

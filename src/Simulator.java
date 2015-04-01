@@ -18,8 +18,6 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	public static int ups = 30;
 	public static Point mouse = new Point(0, 0);
 	private JPanel panel;
-	private ArrayList<Gate> gates = new ArrayList<Gate>();
-	private ArrayList<Switch> switches = new ArrayList<Switch>();
 	private ArrayList<EComponent> eComps = new ArrayList<EComponent>();
 
 	public Simulator() {
@@ -172,10 +170,12 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				}
 			dragged = false;
 		} else {
-			for (Switch s : switches)
-				if (s.checkIfClicked(mouse)) {
-					s.toggle();
-					s.drop();
+			
+			for (EComponent eComp : eComps)
+				if (eComp.checkIfClicked(e.getPoint())) {
+					if (eComp instanceof Switch)
+						((Switch) eComp).toggle();
+					eComp.drop();
 				}
 		}
 
@@ -192,21 +192,23 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		if (e.getKeyChar() == 'a') {
-			addGate(new AND(mouse.x, mouse.y));
+			eComps.add(new AND(mouse.x, mouse.y));
 		} else if (e.getKeyChar() == 'o') {
-			addGate(new OR(mouse.x, mouse.y));
+			eComps.add(new OR(mouse.x, mouse.y));
 		} else if (e.getKeyChar() == 'n') {
-			addGate(new NOT(mouse.x, mouse.y));
+			eComps.add(new NOT(mouse.x, mouse.y));
 		} else if (e.getKeyChar() == 'x') {
-			addGate(new XOR(mouse.x, mouse.y));
+			eComps.add(new XOR(mouse.x, mouse.y));
 		} else if (e.getKeyChar() == 's') {
-			addSwitch(new Switch(mouse.x, mouse.y));
+			eComps.add(new Switch(mouse.x, mouse.y));
 		}else if (e.getKeyChar() == 'd') {
 			eComps.add(new Splitter(mouse.x, mouse.y));
 		}else if (e.getKeyChar() == 'c') {
 			creator = new WireCreator();
 		}else if (e.getKeyChar() == 'h') {
 			eComps.add(new Hub(mouse.x, mouse.y));
+		}else if (e.getKeyChar() == 'l') {
+			eComps.add(new LCD(mouse.x, mouse.y));
 		} else
 			say(e.getKeyChar() + " " + e.getKeyCode());
 
@@ -217,15 +219,5 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void keyReleased(KeyEvent e) {}
-
-	private void addGate(Gate gate) {
-		gates.add(gate);
-		eComps.add(gate);
-	}
-
-	private void addSwitch(Switch sw) {
-		switches.add(sw);
-		eComps.add(sw);
-	}
 
 }

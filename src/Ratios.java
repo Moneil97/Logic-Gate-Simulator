@@ -89,7 +89,11 @@ public enum Ratios {
 
 	HUB_BOUNDS_X_RATIOS(new float[] {0,1,1,0}),
 	
-	HUB_BOUNDS_Y_RATIOS(new float[] {0,0,1,1});
+	HUB_BOUNDS_Y_RATIOS(new float[] {0,0,1,1}),
+	
+	LCD_BOUNDS_X_RATIOS(new float[] {0,1,1,0}),
+	
+	LCD_BOUNDS_Y_RATIOS(new float[] {0,0,1,1});
 	
 	private float[] ratio;
 
@@ -128,7 +132,9 @@ enum RatioGroups {
 
 	XOR_GATE_BOUNDS_RATIOS(new float[][] { Ratios.XOR_GATE_BOUNDS_X_RATIOS.getRatio(), Ratios.XOR_GATE_BOUNDS_Y_RATIOS.getRatio() }),
 	
-	HUB_BOUNDS_RATIOS(new float[][] { Ratios.HUB_BOUNDS_X_RATIOS.getRatio(), Ratios.HUB_BOUNDS_Y_RATIOS.getRatio()});
+	HUB_BOUNDS_RATIOS(new float[][] { Ratios.HUB_BOUNDS_X_RATIOS.getRatio(), Ratios.HUB_BOUNDS_Y_RATIOS.getRatio()}),
+	
+	LCD_BOUNDS_RATIOS(new float[][] { Ratios.LCD_BOUNDS_X_RATIOS.getRatio(), Ratios.LCD_BOUNDS_Y_RATIOS.getRatio()});
 
 	private float[][] ratioGroup;
 
@@ -151,6 +157,8 @@ enum RatioGroups {
 			return XOR_GATE_HOVER_RATIOS.getRatioGroup();
 		if (type == Gates.HUB)
 			return HUB_BOUNDS_RATIOS.getRatioGroup();
+		if (type == Gates.LCD)
+			return LCD_BOUNDS_RATIOS.getRatioGroup();
 		System.err.println("Could not find ratio group");
 		return null;
 	}
