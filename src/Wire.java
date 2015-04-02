@@ -53,7 +53,7 @@ public class Wire extends EComponent {
 	}
 
 	@Override
-	boolean checkIfClicked(Point p) {
+	boolean contains(Point p) {
 		System.err.println("not implemented");
 		return false;
 	}

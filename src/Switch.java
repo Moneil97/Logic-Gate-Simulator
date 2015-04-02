@@ -23,7 +23,7 @@ public class Switch extends EComponent {
 	}
 
 	@Override
-	boolean checkIfClicked(Point p) {
+	boolean contains(Point p) {
 		return bounds.contains(p);
 	}
 

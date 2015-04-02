@@ -22,27 +22,17 @@ enum States {
 
 class Input{
 
-	//private Output out = new Output();
 	private ArrayList<Output> outputs = new ArrayList<Output>();
 	private final int ID;
 	private static int Icounter = 0;
-
-//	public Output getOut() {
-//		return out;
-//	}
 
 	public Input() {
 		ID = Icounter++;
 	}
 
 	public void connect(Output out) {
-		//this.out = out;
 		outputs.add(out);
 	}
-	
-//	public Output getCurrentConnectedOutput(){
-//		return out;
-//	}
 
 	@SuppressWarnings("unchecked")
 	public States getState() {
@@ -51,8 +41,6 @@ class Input{
 			if (out.getState().getBoolean())
 				return States.ON;
 		return States.OFF;
-	
-		//return out.getState();
 	}
 
 	public static Input getDefault() {
@@ -61,17 +49,13 @@ class Input{
 	}
 
 	public boolean isConnectedTo(Output output) {
-		
 		for (Output out : outputs)
 			if (out == output)
 				return true;
 		return false;
-		
-		//return (out == output);
 	}
 
 	public void disconnect(Output out) {
-		//out = new Output();
 		outputs.remove(out);
 	}
 	
@@ -88,8 +72,6 @@ class Output{
 	public States getState() {
 		return state;
 	}
-
-	
 
 	public Output() {
 		ID = Ocounter++;

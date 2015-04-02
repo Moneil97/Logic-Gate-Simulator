@@ -1,4 +1,5 @@
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -27,6 +28,7 @@ public class UserLabel {
 	}
 	
 	public void draw(Graphics2D g){
+		g.setColor(Color.black);
 		g.setFont(font);
 		g.drawString(text, x, y);
 		g.draw(bounds);

@@ -95,7 +95,7 @@ public abstract class EComponent {
 
 	abstract void draw(Graphics2D g);
 
-	abstract boolean checkIfClicked(Point p);
+	abstract boolean contains(Point p);
 
 	public void say(Object x) {
 		System.out.println(x);
@@ -149,6 +149,16 @@ public abstract class EComponent {
 	abstract Rectangle[] getInputHovers();
 
 	abstract Rectangle[] getOutputHovers();
+
+	public void resetInputs() {
+		
+		say("resetting: " + Arrays.toString(inputs));
+		
+		for (int i=0; i < inputs.length; i++)
+			inputs[i] = new Input();
+		
+		say("set to: "  + Arrays.toString(inputs));
+	}
 
 
 }

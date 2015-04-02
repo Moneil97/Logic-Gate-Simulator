@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -144,7 +145,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		}
 		
 		for (EComponent eComp : eComps)
-			if (eComp.checkIfClicked(e.getPoint())) {
+			if (eComp.contains(e.getPoint())) {
 				eComp.pickup();
 				break;
 			}
@@ -214,7 +215,10 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	private ArrayList<UserLabel> labels = new ArrayList<UserLabel>();;
 
 	@Override
-	public void keyTyped(KeyEvent e) {
+	public void keyTyped(KeyEvent e) {}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
 		if (e.getKeyChar() == 'a') {
 			eComps.add(new AND(mouse.x, mouse.y));
 		} else if (e.getKeyChar() == 'o') {
@@ -235,13 +239,82 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			eComps.add(new LCD(mouse.x, mouse.y));
 		}else if (e.getKeyChar() == 't') {
 			labels.add(new UserLabel(mouse.x, mouse.y));
-		} else
-			say(e.getKeyChar() + " " + e.getKeyCode());
-
+		}else if (e.getKeyCode() == 127) {
+			delete();
+		}else
+			say(e.getKeyChar() + " " + e.getKeyCode() + " " + e.getExtendedKeyCode());
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {}
+	private void delete() {
+		
+		//Loop though all eComps to find which one (if any) to delete
+		Iterator<EComponent> iter = eComps.iterator();
+		while (iter.hasNext()){
+			EComponent nextElement = iter.next();
+			if (nextElement.contains(mouse)){
+				//Found one to delete
+				EComponent deleted = nextElement;
+				
+				//Loop through all wires to find ones connected to the deleted eComp
+				Iterator<Wire> wireIter = wires.iterator();
+				while (wireIter.hasNext()){
+					Wire wire = wireIter.next();
+					
+					//Find Wire Inputs connected to the deleted eComp Outputs
+					for (int i =0; i < wire.inputs.length; i++){
+						for (int j =0; j < deleted.outputs.length; j++){
+							if (wire.inputs[i].isConnectedTo(deleted.outputs[j])){
+								
+								//Have found a wire to delete (Wires only have one Output object)
+								Output deletedWireOutput = wire.outputs[0];
+								
+								//Loop through all the eComps again to find inputs connected to the outputs of the deleted wires
+								Iterator<EComponent> iter2 = eComps.iterator();
+								while (iter2.hasNext()){
+									EComponent next = iter2.next();
+									if (next != deleted){
+										//Loop through each input to see if it is connected to the deleted output
+										for (int r=0; r < next.inputs.length; r++){
+											if (next.inputs[r].isConnectedTo(deletedWireOutput)){
+												
+												//Reset the inputs of the object previously connected to the wire
+												next.resetInputs();
+												break;
+											}
+										}	
+									}
+								}
+								//Delete the wire
+								wireIter.remove();
+							}
+						}
+					}
+					
+					//Find Wire Outputs connected to the deleted eComp Inputs
+					for (int i =0; i < wire.outputs.length; i++){
+						for (int j =0; j < deleted.inputs.length; j++){
+							if (deleted.inputs[j].isConnectedTo(wire.outputs[i])){
+								//Can just remove the wire, Inputs store everything,
+								//outputs do not store anything, so do not need to be reset
+								wireIter.remove();
+							}
+						}
+					}
+				}
+				//Finally remove the eComp
+				iter.remove();
+				//We only want to delete one of them
+				break;
+			}
+		}
+			
+		
+		for (UserLabel label : labels){
+			if (label.checkIfClicked(mouse)){
+				labels.remove(label);
+			}
+		}
+	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {}
