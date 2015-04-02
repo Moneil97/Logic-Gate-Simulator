@@ -244,67 +244,70 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		}else
 			say(e.getKeyChar() + " " + e.getKeyCode() + " " + e.getExtendedKeyCode());
 	}
+	
+	
+	
 
 	private void delete() {
 		
 		//Loop though all eComps to find which one (if any) to delete
-		Iterator<EComponent> iter = eComps.iterator();
-		while (iter.hasNext()){
-			EComponent nextElement = iter.next();
-			if (nextElement.contains(mouse)){
-				//Found one to delete
-				EComponent deleted = nextElement;
-				
-				//Loop through all wires to find ones connected to the deleted eComp
-				Iterator<Wire> wireIter = wires.iterator();
-				while (wireIter.hasNext()){
-					Wire wire = wireIter.next();
-					
-					//Find Wire Inputs connected to the deleted eComp Outputs
-					for (int i =0; i < wire.inputs.length; i++){
-						for (int j =0; j < deleted.outputs.length; j++){
-							if (wire.inputs[i].isConnectedTo(deleted.outputs[j])){
-								
-								//Have found a wire to delete (Wires only have one Output object)
-								Output deletedWireOutput = wire.outputs[0];
-								
-								//Loop through all the eComps again to find inputs connected to the outputs of the deleted wires
-								Iterator<EComponent> iter2 = eComps.iterator();
-								while (iter2.hasNext()){
-									EComponent next = iter2.next();
-									if (next != deleted){
-										//Loop through each input to see if it is connected to the deleted output
-										for (int r=0; r < next.inputs.length; r++){
-											if (next.inputs[r].isConnectedTo(deletedWireOutput)){
-												//Remove deleted output from Input's list
-												next.inputs[r].disconnect(deletedWireOutput);
+				Iterator<EComponent> iter = eComps.iterator();
+				while (iter.hasNext()){
+					EComponent nextElement = iter.next();
+					if (nextElement.contains(mouse)){
+						//Found one to delete
+						EComponent deleted = nextElement;
+						
+						//Loop through all wires to find ones connected to the deleted eComp
+						Iterator<Wire> wireIter = wires.iterator();
+						while (wireIter.hasNext()){
+							Wire wire = wireIter.next();
+							
+							//Find Wire Inputs connected to the deleted eComp Outputs
+							for (int i =0; i < wire.inputs.length; i++){
+								for (int j =0; j < deleted.outputs.length; j++){
+									if (wire.inputs[i].isConnectedTo(deleted.outputs[j])){
+										
+										//Have found a wire to delete (Wires only have one Output object)
+										Output deletedWireOutput = wire.outputs[0];
+										
+										//Loop through all the eComps again to find inputs connected to the outputs of the deleted wires
+										Iterator<EComponent> iter2 = eComps.iterator();
+										while (iter2.hasNext()){
+											EComponent next = iter2.next();
+											if (next != deleted){
+												//Loop through each input to see if it is connected to the deleted output
+												for (int r=0; r < next.inputs.length; r++){
+													if (next.inputs[r].isConnectedTo(deletedWireOutput)){
+														//Remove deleted output from Input's list
+														next.inputs[r].disconnect(deletedWireOutput);
+													}
+												}	
 											}
-										}	
+										}
+										//Delete the wire
+										wireIter.remove();
 									}
 								}
-								//Delete the wire
-								wireIter.remove();
+							}
+							
+							//Find Wire Outputs connected to the deleted eComp Inputs
+							for (int i =0; i < wire.outputs.length; i++){
+								for (int j =0; j < deleted.inputs.length; j++){
+									if (deleted.inputs[j].isConnectedTo(wire.outputs[i])){
+										//Can just remove the wire, Inputs store everything,
+										//outputs do not store anything, so do not need to be reset
+										wireIter.remove();
+									}
+								}
 							}
 						}
-					}
-					
-					//Find Wire Outputs connected to the deleted eComp Inputs
-					for (int i =0; i < wire.outputs.length; i++){
-						for (int j =0; j < deleted.inputs.length; j++){
-							if (deleted.inputs[j].isConnectedTo(wire.outputs[i])){
-								//Can just remove the wire, Inputs store everything,
-								//outputs do not store anything, so do not need to be reset
-								wireIter.remove();
-							}
-						}
+						//Finally remove the eComp
+						iter.remove();
+						//We only want to delete one of them
+						break;
 					}
 				}
-				//Finally remove the eComp
-				iter.remove();
-				//We only want to delete one of them
-				break;
-			}
-		}
 			
 		Iterator<UserLabel> labelIter = labels.iterator();
 		while (labelIter.hasNext()){

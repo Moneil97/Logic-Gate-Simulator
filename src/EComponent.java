@@ -150,15 +150,15 @@ public abstract class EComponent {
 
 	abstract Rectangle[] getOutputHovers();
 
-	public void resetInputs() {
-		
-		say("resetting: " + Arrays.toString(inputs));
-		
-		for (int i=0; i < inputs.length; i++)
-			inputs[i] = new Input();
-		
-		say("set to: "  + Arrays.toString(inputs));
-	}
+//	public void resetInputs() {
+//		
+//		say("resetting: " + Arrays.toString(inputs));
+//		
+//		for (int i=0; i < inputs.length; i++)
+//			inputs[i] = new Input();
+//		
+//		say("set to: "  + Arrays.toString(inputs));
+//	}
 
 
 }

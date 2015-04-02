@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class IO {}
 
@@ -56,7 +57,10 @@ class Input{
 	}
 
 	public void disconnect(Output out) {
+		System.out.println("before: " + outputs);
+		System.out.println("removing: " + out);
 		outputs.remove(out);
+		System.out.println("after: " + outputs);
 	}
 	
 	public String toString(){
