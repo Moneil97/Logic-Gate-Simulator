@@ -276,10 +276,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 										//Loop through each input to see if it is connected to the deleted output
 										for (int r=0; r < next.inputs.length; r++){
 											if (next.inputs[r].isConnectedTo(deletedWireOutput)){
-												
-												//Reset the inputs of the object previously connected to the wire
-												next.resetInputs();
-												break;
+												//Remove deleted output from Input's list
+												next.inputs[r].disconnect(deletedWireOutput);
 											}
 										}	
 									}
