@@ -40,7 +40,7 @@ public class UserLabel {
 		bounds.translate(xOff, yOff);
 	}
 	
-	public boolean checkIfClicked(Point p){
+	public boolean contains(Point p){
 		return bounds.contains(p);
 	}
 	

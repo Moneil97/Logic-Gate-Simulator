@@ -151,7 +151,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			}
 		
 		for (UserLabel label : labels)
-			if (label.checkIfClicked(e.getPoint())){
+			if (label.contains(e.getPoint())){
 				label.pickUp();
 				break;
 			}
@@ -308,10 +308,10 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			}
 		}
 			
-		
-		for (UserLabel label : labels){
-			if (label.checkIfClicked(mouse)){
-				labels.remove(label);
+		Iterator<UserLabel> labelIter = labels.iterator();
+		while (labelIter.hasNext()){
+			if (labelIter.next().contains(mouse)){
+				labelIter.remove();
 			}
 		}
 	}
