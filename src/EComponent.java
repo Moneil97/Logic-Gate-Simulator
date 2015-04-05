@@ -10,9 +10,22 @@ public abstract class EComponent {
 	Input[] inputs;
 	Output[] outputs;
 
+	/**
+	 * Empty constructor of EComponent, default Values: (0, 0, 100, 100, 0, 0)
+	 */
+	
 	public EComponent() {
 		this(0, 0, 100, 100, 0, 0);
 	}
+	
+	/**
+	 * @param x xPostion of eComp
+	 * @param y yPostion of eComp
+	 * @param width Width of eComp
+	 * @param height Height of eComp
+	 * @param inputsAmount Amount of Inputs eComp has
+	 * @param outputsAmount Amount of Outputs eComp has
+	 */
 
 	public EComponent(int x, int y, int width, int height, int inputsAmount, int outputsAmount) {
 		this.x = x;
@@ -30,33 +43,47 @@ public abstract class EComponent {
 
 	}
 
+	/**
+	 * Move the EComp Relative to it's current location
+	 * @param xOff Change in x direction
+	 * @param yOff Change in y direction
+	 */
+	
 	public void translate(int xOff, int yOff) {
 		x += xOff;
 		y += yOff;
 	}
 
-	public void pickup() {
-		setPickedUp(true);
-	}
-
-	public void drop() {
-		setPickedUp(false);
-	}
+	/**
+	 * If inputs.length > 0
+	 */
 
 	public boolean hasInputs() {
 		return inputs.length > 0;
 	}
 
+	/**
+	 * If outputs.length > 0
+	 */
+	
 	public boolean hasOutputs() {
 		return outputs.length > 0;
 	}
 	
+	/**
+	 * Set the EComponent's pickedUp field
+	 */
+
+	public void setPickedUp(boolean pickedUp) {
+		this.pickedUp = pickedUp;
+	}
+	
+	/**
+	 * @return Value of pickedUp
+	 */
+	
 	boolean isPickedUp() {
 		return pickedUp;
-	}
-
-	void setPickedUp(boolean pickedUp) {
-		this.pickedUp = pickedUp;
 	}
 
 	public int getX() {
@@ -100,6 +127,11 @@ public abstract class EComponent {
 	public void say(Object x) {
 		System.out.println(x);
 	}
+	
+	/**
+	 * If the passed EComponent's Outputs overlap any of this EComponent's Inputs, link them.
+	 * @param eCompToCheckOutputsOf The EComponent to check the Outputs of
+	 */
 
 	public void acceptOutput(EComponent eCompToCheckOutputsOf) {
 		for (int i = 0; i < inputs.length; i++) {
@@ -122,6 +154,11 @@ public abstract class EComponent {
 			}
 		}
 	}
+	
+	/**
+	 * If the passed EComponent's inputs overlap any of this EComponent's Outputs, link them.
+	 * @param eCompToCheckInputsOf The EComponent to check the Inputs of
+	 */
 
 	public void acceptInput(EComponent eCompToCheckInputsOf) {
 		Input[] inputs = eCompToCheckInputsOf.inputs;
@@ -149,16 +186,5 @@ public abstract class EComponent {
 	abstract Rectangle[] getInputHovers();
 
 	abstract Rectangle[] getOutputHovers();
-
-//	public void resetInputs() {
-//		
-//		say("resetting: " + Arrays.toString(inputs));
-//		
-//		for (int i=0; i < inputs.length; i++)
-//			inputs[i] = new Input();
-//		
-//		say("set to: "  + Arrays.toString(inputs));
-//	}
-
 
 }

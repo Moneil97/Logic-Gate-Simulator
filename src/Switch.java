@@ -28,7 +28,7 @@ public class Switch extends EComponent {
 	}
 
 	public void toggle() {
-		outputs[0].setState(state = States.getEnum(!state.getBoolean()));
+		outputs[0].setState(state = States.toState(!state.getBoolean()));
 	}
 	
 	@Override

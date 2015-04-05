@@ -18,13 +18,40 @@ public abstract class Gate extends EComponent {
 	protected Rectangle inputHovers[];
 	protected Rectangle outputHovers[];
 
+	/**
+	 * Create Gate with default size, 2 inputs, 1 output.
+	 * @param x xPosition
+	 * @param y yPosition
+	 * @param type type of Gate (AND, OR...)
+	 */
+	
 	public Gate(int x, int y, Gates type) {
 		this(x, y, type, 2, 1);
 	}
+	
+	/**
+	 * Create Gate with default size
+	 * @param x xPosition
+	 * @param y yPosition
+	 * @param type type of Gate (AND, OR...)
+	 * @param inputs Number of Inputs
+	 * @param outputs Number of Outputs
+	 */
 
 	public Gate(int x, int y, Gates type, int inputs, int outputs) {
 		this(x, y, 600 / 4, 360 / 4, type, inputs, outputs);
 	}
+	
+	/**
+	 * Create Gate
+	 * @param x xPosition
+	 * @param y yPosition
+	 * @param width Width of eComp
+	 * @param height Height of eComp
+	 * @param type type of Gate (AND, OR...)
+	 * @param inputs Number of Inputs
+	 * @param outputs Number of Outputs
+	 */
 	
 	public Gate(int x, int y,int width, int height, Gates type, int inputs, int outputs) {
 		super(x, y, width, height, inputs, outputs);
@@ -38,38 +65,25 @@ public abstract class Gate extends EComponent {
 		images = ImageTools.getGateImageGroup(type);
 	}
 
-	public abstract float[][] getBoundsRatios();
-	public abstract float[][] getHoverRatios();
+	abstract float[][] getBoundsRatios();
+	abstract float[][] getHoverRatios();
+	/**
+	 * Calculate whether Gate is on/off
+	 * @return ON/OFF
+	 */
+	abstract States calculateState();
 
 	@Override
 	void update() {
 		checkHover();
 		outputs[0].setState(calculateState());
-		//annoyingOutput();
 	}
-
-	@SuppressWarnings("unused")
-	private void annoyingOutput() {
-		/*if (inputs.length > 1)
-			say(inputs[0] + " " + inputs[0].getState() + " + " + inputs[1] + " "
-					+ inputs[1].getState() + " == " + outputs[0].getState() + " "+ outputs[0]
-					+ "                 "+
-					inputs[0].getOut() + inputs[0].getOut().getState() + "  +  " + inputs[1].getOut() + (inputs[1].getOut().getState()));
-		else
-			say(inputs[0] + " " + inputs[0].getState() + " --> " + outputs[0].getState() + " "+ outputs[0]);*/
-	}
-
-	abstract States calculateState();
-
 	
-	
-//	@Override
-//	public void drop() {
-//		super.drop();
-//		generateBounds();
-//		generateHovers();
-//	}
-	//TODO check which is faster on a slow computer
+	/**
+	 * Move the Gate and it's bounds relative to it's current location
+	 * @param xOff Change in x direction
+	 * @param yOff Change in y direction
+	 */
 	
 	@Override
 	public void translate(int xOff, int yOff) {
@@ -80,20 +94,17 @@ public abstract class Gate extends EComponent {
 			inputHovers[i].translate(xOff, yOff);
 		for (int i=0; i < outputHovers.length; i++)
 			outputHovers[i].translate(xOff, yOff);
-	
 	}
 
+	/**
+	 * Check if the mouse is hovering above any inputs or outputs
+	 */
+	
 	public void checkHover() {
-
 		for (int i = 0; i < inputs.length; i++)
 			hovers[i] = inputHovers[i].contains(Simulator.mouse);
-		// hovers[0] = inputHovers[TOP].contains(Simulator.mouse);
-		// hovers[1] = inputHovers[BOTTOM].contains(Simulator.mouse);
-
 		for (int i = inputs.length, j = 0; j < outputs.length; i++, j++)
 			hovers[i] = outputHovers[j].contains(Simulator.mouse);
-		// hovers[2] = outputHovers[0].contains(Simulator.mouse);
-		// say(Arrays.toString(hovers));
 	}
 
 	@Override
@@ -116,6 +127,10 @@ public abstract class Gate extends EComponent {
 		g.drawString(Arrays.toString(outputs), x+width/2, y+height);
 	}
 
+	/**
+	 * Generate bounds of the Gate
+	 */
+	
 	protected void generateBounds() {
 
 		int size = boundsRatios[0].length;
@@ -131,6 +146,9 @@ public abstract class Gate extends EComponent {
 		bounds = new Polygon(xs, ys, size);
 	}
 
+	/**
+	 * Generate hovers for Gate's inputs and outputs
+	 */
 	protected void generateHovers() {
 
 		int size = 4; // Rectangle
@@ -162,10 +180,14 @@ public abstract class Gate extends EComponent {
 		}
 
 	}
-
+	
+	/**
+	 * Check if the mouse is within the Gate
+	 * @param mouse mouse location
+	 */
 	@Override
-	boolean contains(Point p) {
-		return (bounds.contains(p));
+	boolean contains(Point mouse) {
+		return (bounds.contains(mouse));
 	}
 
 	@Override
@@ -192,7 +214,7 @@ class AND extends Gate {
 
 	@Override
 	States calculateState() {
-		return States.getEnum(inputs[0].getState().getBoolean() && inputs[1].getState().getBoolean());
+		return States.toState(inputs[0].getState().getBoolean() && inputs[1].getState().getBoolean());
 	}
 
 	public String toString() {
@@ -223,7 +245,7 @@ class OR extends Gate {
 
 	@Override
 	States calculateState() {
-		return States.getEnum(inputs[0].getState().getBoolean() || inputs[1].getState().getBoolean());
+		return States.toState(inputs[0].getState().getBoolean() || inputs[1].getState().getBoolean());
 	}
 
 	public String toString() {
@@ -249,7 +271,7 @@ class NOT extends Gate {
 
 	@Override
 	States calculateState() {
-		return States.getEnum(!inputs[0].getState().getBoolean());
+		return States.toState(!inputs[0].getState().getBoolean());
 	}
 
 	@Override
@@ -271,8 +293,7 @@ class XOR extends Gate{
 	
 	@Override
 	States calculateState() {
-		//say(inputs[0].getState() + " + " + inputs[1].getState() + " = " + States.getEnum(inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean()));
-		return States.getEnum(inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean());
+		return States.toState(inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean());
 	}
 
 	@Override

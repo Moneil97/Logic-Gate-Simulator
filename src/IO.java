@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public abstract class IO {}
 
@@ -15,8 +14,14 @@ enum States {
 	boolean getBoolean() {
 		return b;
 	}
+	
+	/**
+	 * Converts boolean to State
+	 * @param b boolean
+	 * @return true --> ON, false --> OFF
+	 */
 
-	public static States getEnum(boolean b) {
+	public static States toState(boolean b) {
 		return (b ? ON : OFF);
 	}
 }
@@ -37,7 +42,6 @@ class Input{
 
 	@SuppressWarnings("unchecked")
 	public States getState() {
-		
 		for (Output out : (ArrayList<Output>) outputs.clone())
 			if (out.getState().getBoolean())
 				return States.ON;
@@ -55,6 +59,11 @@ class Input{
 				return true;
 		return false;
 	}
+	
+	/**
+	 * Remove Output from array
+	 * @param out Output to be removed
+	 */
 
 	public void disconnect(Output out) {
 		System.out.println("before: " + outputs);

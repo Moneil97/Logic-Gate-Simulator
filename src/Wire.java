@@ -92,6 +92,11 @@ class WireCreator {
 	Wire create() {
 		return new Wire(inputParent, outputParent, i, j);
 	}
+	
+	/**
+	 * @param eComp eComp of the desired input
+	 * @param i sub of eComp's input array
+	 */
 
 	public void setInputParent(EComponent eComp, int i) {
 		this.i = i;
@@ -105,6 +110,11 @@ class WireCreator {
 			centerInput = inputParent.height/2;
 		}
 	}
+	
+	/**
+	 * @param eComp eComp of the desired output
+	 * @param j sub of eComp's output array
+	 */
 
 	public void setOutputParent(EComponent eComp, int j) {
 		this.j = j;

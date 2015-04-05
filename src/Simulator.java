@@ -20,6 +20,11 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	public static Point mouse = new Point(0, 0);
 	private JPanel panel;
 	private ArrayList<EComponent> eComps = new ArrayList<EComponent>();
+	private WireCreator creator;
+	private ArrayList<UserLabel> labels = new ArrayList<UserLabel>();
+	private Point mouseDraggedLast = new Point(0, 0);
+	private boolean dragged = false;
+	private ArrayList<Wire> wires = new ArrayList<Wire>();
 
 	public Simulator() {
 
@@ -87,9 +92,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		}
 	}
 
-	Point mouseDraggedLast = new Point(0, 0);
-	boolean dragged = false;
-	ArrayList<Wire> wires = new ArrayList<Wire>();
+	
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -146,7 +149,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		
 		for (EComponent eComp : eComps)
 			if (eComp.contains(e.getPoint())) {
-				eComp.pickup();
+				eComp.setPickedUp(true);
 				break;
 			}
 		
@@ -162,7 +165,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		if (dragged) {
 			for (EComponent droppedEComp : eComps)
 				if (droppedEComp.isPickedUp()) {
-					droppedEComp.drop();
+					droppedEComp.setPickedUp(false);
 					if (droppedEComp.hasInputs()) {
 						say(droppedEComp + " has inputs");
 						for (EComponent otherEComp : eComps) {
@@ -195,7 +198,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				if (eComp.isPickedUp()) {
 					if (eComp instanceof Switch)
 						((Switch) eComp).toggle();
-					eComp.drop();
+					eComp.setPickedUp(false);
 				}
 			for (UserLabel label : labels)
 				if (label.isPickedUp()){
@@ -211,8 +214,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	@Override
 	public void mouseExited(MouseEvent e) {}
 	
-	private WireCreator creator;
-	private ArrayList<UserLabel> labels = new ArrayList<UserLabel>();;
+	
 
 	@Override
 	public void keyTyped(KeyEvent e) {}
@@ -244,10 +246,11 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		}else
 			say(e.getKeyChar() + " " + e.getKeyCode() + " " + e.getExtendedKeyCode());
 	}
-	
-	
-	
 
+	/**
+	 * Delete eComp that mouse is hovering over
+	 */
+	
 	private void delete() {
 		
 		//Loop though all eComps to find which one (if any) to delete
