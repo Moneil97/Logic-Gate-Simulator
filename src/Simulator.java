@@ -23,16 +23,16 @@ import javax.swing.JPopupMenu;
 @SuppressWarnings("serial")
 public class Simulator extends JFrame implements Runnable, MouseMotionListener, MouseListener, KeyListener {
 
-	public static int ups = 30;
-	public static Point mouse = new Point(0, 0);
-	private JPanel panel;
-	protected static ArrayList<EComponent> eComps = new ArrayList<EComponent>();
+	public static final int ups = 30;
+	public static final Point mouse = new Point(0, 0);
+	private final JPanel panel;
+	protected static final ArrayList<EComponent> eComps = new ArrayList<EComponent>();
 	protected static WireCreator creator;
-	protected static ArrayList<UserLabel> labels = new ArrayList<UserLabel>();
-	private Point mouseDraggedLast = new Point(0, 0);
+	protected static final ArrayList<UserLabel> labels = new ArrayList<UserLabel>();
+	private final Point mouseDraggedLast = new Point(0, 0);
 	private boolean dragged = false;
 	protected static ArrayList<Wire> wires = new ArrayList<Wire>();
-	protected DefaultPopup defaultPopup = new DefaultPopup();
+	protected final DefaultPopup defaultPopup = new DefaultPopup();
 
 	public Simulator() {
 
@@ -125,7 +125,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	public void mouseDragged(MouseEvent e) {
 		dragged = true;
 		mouseDraggedLast.setLocation(mouse);
-		mouse = e.getPoint();
+		mouse.setLocation(e.getPoint());// = e.getPoint();
 		
 		int xOff = mouse.x - mouseDraggedLast.x;
 		int yOff = mouse.y - mouseDraggedLast.y;
@@ -141,7 +141,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		mouse = e.getPoint();
+		mouse.setLocation(e.getPoint());// = e.getPoint();
 	}
 
 	public static void say(Object x) {
