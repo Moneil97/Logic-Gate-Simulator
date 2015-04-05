@@ -120,6 +120,19 @@ class LabelPopup extends JPopupMenu{
 				}
 			});
 		this.add(font);
+			JMenuItem delete = new JMenuItem("Delete");
+			delete.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try{
+						Simulator.labels.remove(temp);
+						temp = null;
+					}catch(Exception error){
+						error.printStackTrace();
+					}
+				}
+			});
+		this.add(delete);
 		
 	}
 	

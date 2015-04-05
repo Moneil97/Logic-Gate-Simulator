@@ -1,7 +1,7 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.MenuItem;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,13 +26,13 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	public static int ups = 30;
 	public static Point mouse = new Point(0, 0);
 	private JPanel panel;
-	private ArrayList<EComponent> eComps = new ArrayList<EComponent>();
-	private WireCreator creator;
-	private ArrayList<UserLabel> labels = new ArrayList<UserLabel>();
+	protected static ArrayList<EComponent> eComps = new ArrayList<EComponent>();
+	protected static WireCreator creator;
+	protected static ArrayList<UserLabel> labels = new ArrayList<UserLabel>();
 	private Point mouseDraggedLast = new Point(0, 0);
 	private boolean dragged = false;
-	private ArrayList<Wire> wires = new ArrayList<Wire>();
-	private MyPopup popup;
+	protected static ArrayList<Wire> wires = new ArrayList<Wire>();
+	protected DefaultPopup defaultPopup = new DefaultPopup();
 
 	public Simulator() {
 
@@ -55,8 +55,6 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		});
 		panel.setBackground(Color.white);
 		
-		popup = new MyPopup();
-		
 		class MyMenuBar extends JMenuBar{
 			
 			public MyMenuBar() {
@@ -74,11 +72,10 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				this.add(tools);
 				
 			}
-
 		}
 
 		this.setJMenuBar(new MyMenuBar());
-		
+		this.setTitle("Logic Gate Simulator [Cameron O'Neil]");
 		this.setSize(1000, 800);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -123,8 +120,6 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 		}
 	}
-
-	
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -196,15 +191,18 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			
 			for (EComponent eComp : eComps)
 				if (eComp.contains(e.getPoint())) {
-					popup.show(e.getComponent(), e.getX(), e.getY());
-					break;
+					//TODO fix this
+					//popup.show(e.getComponent(), e.getX(), e.getY());
+					return;
 				}
 			
 			for (UserLabel label : labels)
 				if (label.contains(e.getPoint())){
 					label.doPopup(e.getComponent(), e.getX(), e.getY());
-					break;
+					return;
 				}
+			
+			defaultPopup.show(e.getComponent(), e.getX(), e.getY());
 			
 		}
 		
@@ -295,101 +293,111 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		}else if (e.getKeyChar() == 't') {
 			labels.add(new UserLabel(mouse.x, mouse.y));
 		}else if (e.getKeyCode() == 127) {
-			delete();
+			delete(mouse);
 		}else
 			say(e.getKeyChar() + " " + e.getKeyCode() + " " + e.getExtendedKeyCode());
 	}
-
+	
 	/**
-	 * Delete eComp that mouse is hovering over
+	 * Find eComp at point and delete it
+	 * @param p Point to delete eComp at
 	 */
 	
-	private void delete() {
-		
-		//Loop though all eComps to find which one (if any) to delete
+	protected void delete(Point p) {
+		// Loop though all eComps to find which one (if any) to delete
 		Iterator<EComponent> iter = eComps.iterator();
-		while (iter.hasNext()){
+		while (iter.hasNext()) {
 			EComponent nextElement = iter.next();
-			if (nextElement.contains(mouse)){
-				//Found one to delete
+			if (nextElement.contains(p)) {
+				// Found one to delete
 				EComponent deleted = nextElement;
-				
-				//Loop through all wires to find ones connected to the deleted eComp
-				Iterator<Wire> wireIter = wires.iterator();
-				while (wireIter.hasNext()){
-					Wire wire = wireIter.next();
-					
-					//Find Wire Inputs connected to the deleted eComp Outputs
-					for (int i =0; i < wire.inputs.length; i++){
-						for (int j =0; j < deleted.outputs.length; j++){
-							if (wire.inputs[i].isConnectedTo(deleted.outputs[j])){
-								
-								//Have found a wire to delete (Wires only have one Output object)
-								Output deletedWireOutput = wire.outputs[0];
-								
-								//Loop through all the eComps again to find inputs connected to the outputs of the deleted wires
-								Iterator<EComponent> iter2 = eComps.iterator();
-								while (iter2.hasNext()){
-									EComponent next = iter2.next();
-									if (next != deleted){
-										//Loop through each input to see if it is connected to the deleted output
-										for (int r=0; r < next.inputs.length; r++){
-											if (next.inputs[r].isConnectedTo(deletedWireOutput)){
-												//Remove deleted output from Input's list
-												next.inputs[r].disconnect(deletedWireOutput);
-											}
-										}	
-									}
-								}
-								//Delete the wire
-								wireIter.remove();
-							}
-						}
-					}
-					
-					//Find Wire Outputs connected to the deleted eComp Inputs
-					for (int i =0; i < wire.outputs.length; i++){
-						for (int j =0; j < deleted.inputs.length; j++){
-							if (deleted.inputs[j].isConnectedTo(wire.outputs[i])){
-								//Can just remove the wire, Inputs store everything,
-								//outputs do not store anything, so do not need to be reset
-								wireIter.remove();
-							}
-						}
-					}
-				}
-				
-				
-				//Loop through all physical contacts
-				Iterator<EComponent> otherIter = eComps.iterator();
-				while (otherIter.hasNext()){
-					EComponent other = otherIter.next();
-					
-					for (int i=0; i < deleted.outputs.length; i++){
-						for (int j=0; j < other.inputs.length; j++){
-							if (other.inputs[j].isConnectedTo(deleted.outputs[i])){
-								other.inputs[j].disconnect(deleted.outputs[i]);
-							}
-						}
-					}
-					
-				}
-				
-				
-				//Finally remove the eComp
+				delete(deleted);
+				// Finally remove the eComp
 				iter.remove();
-				//We only want to delete one of them
+				// We only want to delete one of them
 				break;
 			}
 		}
-			
+
 		Iterator<UserLabel> labelIter = labels.iterator();
-		while (labelIter.hasNext()){
-			if (labelIter.next().contains(mouse)){
+		while (labelIter.hasNext()) {
+			if (labelIter.next().contains(p)) {
 				labelIter.remove();
 			}
 		}
-		
+	}
+
+	/**
+	 * Delete specified eComp and all wires associated with it
+	 */
+	
+	protected void delete(EComponent deleted) {
+
+		// Loop through all wires to find ones connected to the deleted eComp
+		Iterator<Wire> wireIter = wires.iterator();
+		while (wireIter.hasNext()) {
+			Wire wire = wireIter.next();
+
+			// Find Wire Inputs connected to the deleted eComp Outputs
+			for (int i = 0; i < wire.inputs.length; i++) {
+				for (int j = 0; j < deleted.outputs.length; j++) {
+					if (wire.inputs[i].isConnectedTo(deleted.outputs[j])) {
+
+						// Have found a wire to delete (Wires only have one
+						// Output object)
+						Output deletedWireOutput = wire.outputs[0];
+
+						// Loop through all the eComps again to find inputs
+						// connected to the outputs of the deleted wires
+						Iterator<EComponent> iter2 = eComps.iterator();
+						while (iter2.hasNext()) {
+							EComponent next = iter2.next();
+							if (next != deleted) {
+								// Loop through each input to see if it is
+								// connected to the deleted output
+								for (int r = 0; r < next.inputs.length; r++) {
+									if (next.inputs[r].isConnectedTo(deletedWireOutput)) {
+										// Remove deleted output from Input's
+										// list
+										next.inputs[r].disconnect(deletedWireOutput);
+									}
+								}
+							}
+						}
+						// Delete the wire
+						wireIter.remove();
+					}
+				}
+			}
+
+			// Find Wire Outputs connected to the deleted eComp Inputs
+			for (int i = 0; i < wire.outputs.length; i++) {
+				for (int j = 0; j < deleted.inputs.length; j++) {
+					if (deleted.inputs[j].isConnectedTo(wire.outputs[i])) {
+						// Can just remove the wire, Inputs store everything,
+						// outputs do not store anything, so do not need to be
+						// reset
+						wireIter.remove();
+					}
+				}
+			}
+		}
+
+		// Loop through all physical contacts
+		Iterator<EComponent> otherIter = eComps.iterator();
+		while (otherIter.hasNext()) {
+			EComponent other = otherIter.next();
+
+			for (int i = 0; i < deleted.outputs.length; i++) {
+				for (int j = 0; j < other.inputs.length; j++) {
+					if (other.inputs[j].isConnectedTo(deleted.outputs[i])) {
+						other.inputs[j].disconnect(deleted.outputs[i]);
+					}
+				}
+			}
+
+		}
+
 	}
 	
 	/**
@@ -402,22 +410,108 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		labels.clear();
 	}
 
+
 	@Override
 	public void keyReleased(KeyEvent e) {}
 
-	class MyPopup extends JPopupMenu{
+	/**
+	 * The pop-up that will display if right-clicked on no objects
+	 * @author Cameron O'Neil
+	 */
+	
+	class DefaultPopup extends JPopupMenu{
 		
-		public MyPopup() {
+		/**
+		 * Point stored to be used to place objects
+		 */
+		private Point p;
+		
+		public DefaultPopup() {
 			
-				JMenuItem item = new JMenuItem("Do stuff");
-				item.addActionListener(new ActionListener() {
+				JMenu gates = new JMenu("Create Gate: ");
+					JMenuItem andGate = new JMenuItem("AND Gate");
+					andGate.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Simulator.eComps.add(new AND(p.x, p.y));
+						}
+					});
+					gates.add(andGate);
+					JMenuItem orGate = new JMenuItem("OR Gate");
+					orGate.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Simulator.eComps.add(new OR(p.x, p.y));
+						}
+					});
+					gates.add(orGate);
+					JMenuItem xorGate = new JMenuItem("XOR Gate");
+					xorGate.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Simulator.eComps.add(new XOR(p.x, p.y));
+						}
+					});
+					gates.add(xorGate);
+					JMenuItem notGate = new JMenuItem("NOT Gate");
+					notGate.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Simulator.eComps.add(new NOT(p.x, p.y));
+						}
+					});
+					gates.add(notGate);
+					JMenuItem halfAdder = new JMenuItem("Half Adder");
+					halfAdder.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Simulator.eComps.add(new HalfAdder(p.x, p.y));
+						}
+					});
+					gates.add(halfAdder);
+			this.add(gates);
+				JMenu other = new JMenu("Create Other: ");
+					JMenuItem lcd = new JMenuItem("LCD");
+					lcd.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Simulator.eComps.add(new LCD(p.x, p.y));
+						}
+					});
+					other.add(lcd);
+					JMenuItem wire = new JMenuItem("Wire");
+					wire.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Simulator.creator = new WireCreator();
+						}
+					});
+					other.add(wire);
+					JMenuItem onOff = new JMenuItem("Switch");
+					onOff.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Simulator.eComps.add(new Switch(p.x, p.y));
+						}
+					});
+					other.add(onOff);
+			this.add(other);
+				
+				JMenuItem label = new JMenuItem("Create Label");
+				label.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						say("something");
+						Simulator.labels.add(new UserLabel(p.x, p.y));
 					}
 				});
-			this.add(item);
+			this.add(label);
 			
+		}
+		
+		@Override
+		public void show(Component invoker, int x, int y) {
+			p = new Point(x,y);
+			super.show(invoker, x, y);
 		}
 		
 	}

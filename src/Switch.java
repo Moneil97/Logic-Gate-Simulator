@@ -2,6 +2,11 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+/**
+ * ON/OFF Switch
+ * @author Cameron O'Neil
+ */
+
 public class Switch extends EComponent {
 
 	private States state = States.OFF;

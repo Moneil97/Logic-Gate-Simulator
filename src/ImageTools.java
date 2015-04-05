@@ -91,6 +91,8 @@ public class ImageTools {
 			return NOTImages;
 		else if (type.equals(Gates.XOR))
 			return XORImages;
+		else if (type.equals(Gates.HALF_ADDER))
+			return HALF_ADDER_IMAGES;
 		else {
 			System.err.println("Image does not exist");
 			return null;
