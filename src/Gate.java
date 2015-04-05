@@ -30,6 +30,19 @@ public abstract class Gate extends EComponent {
 	}
 	
 	/**
+	 * Create Gate with 2 inputs, 1 output
+	 * @param x xPosition
+	 * @param y yPosition
+	 * @param width Width of eComp
+	 * @param height Height of eComp
+	 * @param type type of Gate (AND, OR...)
+	 */
+	
+	public Gate(int x, int y, int width, int height, Gates type) {
+		this(x, y, width, height, type, 2, 1);
+	}
+	
+	/**
 	 * Create Gate with default size
 	 * @param x xPosition
 	 * @param y yPosition
@@ -205,11 +218,14 @@ public abstract class Gate extends EComponent {
 class AND extends Gate {
 
 	public static int AND_Counter = 0;
-	final int ID;
+	final int ID = AND_Counter++;
 
 	public AND(int x, int y) {
 		super(x, y, Gates.AND);
-		ID = AND_Counter++;
+	}
+	
+	public AND(int x, int y, int width, int height){
+		super(x,y,width,height, Gates.AND);
 	}
 
 	@Override
