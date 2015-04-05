@@ -75,6 +75,11 @@ public class Wire extends EComponent {
 		return null;
 	}
 
+	@Override
+	void onResize() {
+		//Wires can't be resized
+	}
+
 }
 
 class WireCreator {

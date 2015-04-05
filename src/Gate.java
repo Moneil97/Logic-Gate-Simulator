@@ -139,6 +139,12 @@ public abstract class Gate extends EComponent {
 		g.drawString(Arrays.toString(inputs), x,y);
 		g.drawString(Arrays.toString(outputs), x+width/2, y+height);
 	}
+	
+	@Override
+	void onResize() {
+		generateBounds();
+		generateHovers();
+	}
 
 	/**
 	 * Generate bounds of the Gate

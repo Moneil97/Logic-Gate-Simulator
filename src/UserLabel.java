@@ -126,9 +126,11 @@ class LabelPopup extends JPopupMenu{
 				public void actionPerformed(ActionEvent e) {
 					try{
 						Simulator.labels.remove(temp);
-						temp = null;
 					}catch(Exception error){
-						error.printStackTrace();
+						System.err.println(error.getMessage());
+					}
+					finally{
+						temp = null;
 					}
 				}
 			});

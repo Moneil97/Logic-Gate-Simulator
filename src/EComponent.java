@@ -1,7 +1,14 @@
+import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
+
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 
 public abstract class EComponent {
 
@@ -42,6 +49,11 @@ public abstract class EComponent {
 		say(Arrays.toString(this.outputs));
 
 	}
+	
+	/**
+	 * Called when eComp is resized
+	 */
+	abstract void onResize();
 
 	/**
 	 * Move the EComp Relative to it's current location
@@ -101,21 +113,21 @@ public abstract class EComponent {
 	public void setY(int y) {
 		this.y = y;
 	}
+	
+	public void setSize(int width, int height){
+		this.width = width;
+		this.height = height;
+		onResize();
+	}
 
+	
 	public int getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
-		this.width = width;
-	}
 
 	public int getHeight() {
 		return height;
-	}
-
-	public void setHeight(int height) {
-		this.height = height;
 	}
 
 	abstract void update();
@@ -187,4 +199,95 @@ public abstract class EComponent {
 
 	abstract Rectangle[] getOutputHovers();
 
+	EComponentPopup popup = new EComponentPopup();
+	
+	/**
+	 * Open Pop-up for EComponents
+	 * @param component Component that the menu was opened from
+	 * @param x xPosition
+	 * @param y yPosition
+	 */
+	
+	public void doPopup(Component component, int x, int y) {
+		popup.show(this, component, x, y);
+	}
+	
+	/** 
+	 * Sets All Inputs and Outputs to new Objects
+	 */
+
+	public void resetIO() {
+		for (int i=0; i < inputs.length; i++)
+			inputs[i] = new Input();
+		for (int i=0; i < outputs.length; i++)
+			outputs[i] = new Output();
+	}
+
+}
+
+@SuppressWarnings("serial")
+class EComponentPopup extends JPopupMenu{
+	
+	private EComponent temp;
+	
+	public EComponentPopup() {
+		
+			JMenuItem reSize = new JMenuItem("Resize");
+			reSize.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try{
+						String[] options = JOptionPane.showInputDialog("width height", temp.getWidth() + " " + temp.getHeight()).split(" ");
+						temp.setSize(Integer.parseInt(options[0]), Integer.parseInt(options[1]));
+					}
+					catch(Exception error){
+						System.err.println(error.getMessage());
+					}
+					finally{
+						temp = null;
+					}
+					
+				}
+			});
+		this.add(reSize);
+			JMenuItem font = new JMenuItem("Remove Wires");
+			font.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try{
+						Simulator.removeConnections(temp);
+						temp.resetIO();
+					}catch(Exception error){
+						System.err.println(error.getMessage());
+					}
+					finally{
+						temp = null;
+					}
+				}
+			});
+		this.add(font);
+			JMenuItem delete = new JMenuItem("Delete");
+			delete.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try{
+						Simulator.delete(temp);
+					}catch(Exception error){
+						System.err.println(error.getMessage());
+					}
+					finally{
+						temp = null;
+					}
+					
+				}
+			});
+		this.add(delete);
+		
+	}
+	
+	public void show(EComponent eComp, Component invoker, int x, int y) {
+		temp = eComp;
+		show(invoker, x, y);
+	}
+	
 }

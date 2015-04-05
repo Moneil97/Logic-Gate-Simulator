@@ -60,7 +60,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			public MyMenuBar() {
 				
 				JMenu tools = new JMenu("Tools");
-					JMenuItem reset = new JMenuItem("Reset");
+					JMenuItem reset = new JMenuItem("Clear");
 					reset.addActionListener(new ActionListener() {
 						
 						@Override
@@ -144,7 +144,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		mouse = e.getPoint();
 	}
 
-	public void say(Object x) {
+	public static void say(Object x) {
 		System.out.println(x);
 	}
 
@@ -191,8 +191,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			
 			for (EComponent eComp : eComps)
 				if (eComp.contains(e.getPoint())) {
-					//TODO fix this
-					//popup.show(e.getComponent(), e.getX(), e.getY());
+					eComp.doPopup(e.getComponent(), e.getX(), e.getY());
 					return;
 				}
 			
@@ -303,7 +302,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	 * @param p Point to delete eComp at
 	 */
 	
-	protected void delete(Point p) {
+	protected static void delete(Point p) {
 		// Loop though all eComps to find which one (if any) to delete
 		Iterator<EComponent> iter = eComps.iterator();
 		while (iter.hasNext()) {
@@ -311,7 +310,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			if (nextElement.contains(p)) {
 				// Found one to delete
 				EComponent deleted = nextElement;
-				delete(deleted);
+				removeConnections(deleted);
 				// Finally remove the eComp
 				iter.remove();
 				// We only want to delete one of them
@@ -326,13 +325,18 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			}
 		}
 	}
+	
+	protected static void delete(EComponent toDelete){
+		removeConnections(toDelete);
+		eComps.remove(toDelete);
+	}
 
 	/**
 	 * Delete specified eComp and all wires associated with it
 	 */
 	
-	protected void delete(EComponent deleted) {
-
+	protected static void removeConnections(EComponent toDelete) {
+		
 		// Loop through all wires to find ones connected to the deleted eComp
 		Iterator<Wire> wireIter = wires.iterator();
 		while (wireIter.hasNext()) {
@@ -340,8 +344,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 			// Find Wire Inputs connected to the deleted eComp Outputs
 			for (int i = 0; i < wire.inputs.length; i++) {
-				for (int j = 0; j < deleted.outputs.length; j++) {
-					if (wire.inputs[i].isConnectedTo(deleted.outputs[j])) {
+				for (int j = 0; j < toDelete.outputs.length; j++) {
+					if (wire.inputs[i].isConnectedTo(toDelete.outputs[j])) {
 
 						// Have found a wire to delete (Wires only have one
 						// Output object)
@@ -352,7 +356,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 						Iterator<EComponent> iter2 = eComps.iterator();
 						while (iter2.hasNext()) {
 							EComponent next = iter2.next();
-							if (next != deleted) {
+							if (next != toDelete) {
 								// Loop through each input to see if it is
 								// connected to the deleted output
 								for (int r = 0; r < next.inputs.length; r++) {
@@ -372,8 +376,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 			// Find Wire Outputs connected to the deleted eComp Inputs
 			for (int i = 0; i < wire.outputs.length; i++) {
-				for (int j = 0; j < deleted.inputs.length; j++) {
-					if (deleted.inputs[j].isConnectedTo(wire.outputs[i])) {
+				for (int j = 0; j < toDelete.inputs.length; j++) {
+					if (toDelete.inputs[j].isConnectedTo(wire.outputs[i])) {
 						// Can just remove the wire, Inputs store everything,
 						// outputs do not store anything, so do not need to be
 						// reset
@@ -388,16 +392,15 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		while (otherIter.hasNext()) {
 			EComponent other = otherIter.next();
 
-			for (int i = 0; i < deleted.outputs.length; i++) {
+			for (int i = 0; i < toDelete.outputs.length; i++) {
 				for (int j = 0; j < other.inputs.length; j++) {
-					if (other.inputs[j].isConnectedTo(deleted.outputs[i])) {
-						other.inputs[j].disconnect(deleted.outputs[i]);
+					if (other.inputs[j].isConnectedTo(toDelete.outputs[i])) {
+						other.inputs[j].disconnect(toDelete.outputs[i]);
 					}
 				}
 			}
 
 		}
-
 	}
 	
 	/**

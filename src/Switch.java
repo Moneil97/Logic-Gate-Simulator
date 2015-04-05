@@ -53,4 +53,9 @@ public class Switch extends EComponent {
 		return new Rectangle[]{bounds};
 	}
 
+	@Override
+	void onResize() {
+		bounds = new Rectangle(x,y,95,28);
+	}
+
 }
