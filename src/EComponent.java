@@ -258,7 +258,12 @@ class EComponentPopup extends JPopupMenu{
 						Simulator.removeConnections(temp);
 						temp.resetIO();
 					}catch(Exception error){
-						System.err.println(error.getMessage());
+						try{
+							Simulator.removeConnections(temp);
+							temp.resetIO();
+						}catch(Exception error2){
+							error2.printStackTrace();
+						}
 					}
 					finally{
 						temp = null;
@@ -273,7 +278,11 @@ class EComponentPopup extends JPopupMenu{
 					try{
 						Simulator.delete(temp);
 					}catch(Exception error){
-						System.err.println(error.getMessage());
+						try{
+							Simulator.delete(temp);
+						}catch(Exception error2){
+							error2.printStackTrace();
+						}
 					}
 					finally{
 						temp = null;

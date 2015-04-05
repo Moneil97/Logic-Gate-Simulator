@@ -11,10 +11,16 @@ public class Switch extends EComponent {
 
 	private States state = States.OFF;
 	private Rectangle bounds;
+	
+	public static final int DEFAULT_WIDTH = 96, DEFAULT_HEIGHT = 29;
 
 	public Switch(int x, int y) {
-		super(x, y, 95, 28, 0, 1);
-		bounds = new Rectangle(x,y,95,28);
+		this(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	}
+	
+	public Switch(int x, int y, int width, int height) {
+		super(x, y, width, height, 0, 1);
+		bounds = new Rectangle(x,y,width,height);
 	}
 
 	@Override
@@ -24,7 +30,7 @@ public class Switch extends EComponent {
 
 	@Override
 	void draw(Graphics2D g) {
-		g.drawImage((state.getBoolean() ? ImageTools.ON : ImageTools.OFF), x, y, null);
+		g.drawImage((state.getBoolean() ? ImageTools.ON : ImageTools.OFF), x, y, width, height, null);
 	}
 
 	@Override
@@ -55,7 +61,7 @@ public class Switch extends EComponent {
 
 	@Override
 	void onResize() {
-		bounds = new Rectangle(x,y,95,28);
+		bounds = new Rectangle(x,y,width,height);
 	}
 
 }

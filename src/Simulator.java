@@ -439,10 +439,6 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		public void actionPerformed(ActionEvent e) {
 			switch (type){
 				case AND:
-					say(eComps);
-					say(location);
-					say(width);
-					say(height);
 					eComps.add(new AND(location.x,location.y,width,height));
 					break;
 				case OR:
@@ -456,6 +452,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					break;
 				case HALF_ADDER:
 					eComps.add(new HalfAdder(location.x,location.y,width,height));
+					break;
 				default:
 					System.err.println("Default Case!");
 					break;
@@ -538,14 +535,6 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					
 			this.add(gates);
 				JMenu other = new JMenu("Create Other: ");
-					JMenuItem lcd = new JMenuItem("LCD");
-					lcd.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Simulator.eComps.add(new LCD(mouseLocation.x, mouseLocation.y));
-						}
-					});
-					other.add(lcd);
 					JMenuItem wire = new JMenuItem("Wire");
 					wire.addActionListener(new ActionListener() {
 						@Override
@@ -554,14 +543,71 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 						}
 					});
 					other.add(wire);
-					JMenuItem onOff = new JMenuItem("Switch");
-					onOff.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Simulator.eComps.add(new Switch(mouseLocation.x, mouseLocation.y));
-						}
-					});
-					other.add(onOff);
+					
+					JMenu lcd = new JMenu("LCD");
+						JMenuItem smallLCD = new JMenuItem(Strings.SMALL);
+						smallLCD.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Simulator.eComps.add(new LCD(mouseLocation.x, mouseLocation.y, Math.round(LCD.DEFAULT_WIDTH * Sizes.small.getRatio()),
+										Math.round(LCD.DEFAULT_HEIGHT * Sizes.small.getRatio())));
+							}
+						});
+						lcd.add(smallLCD);
+						
+						JMenuItem mediumLCD = new JMenuItem(Strings.MEDUIM);
+						mediumLCD.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Simulator.eComps.add(new LCD(mouseLocation.x, mouseLocation.y, Math.round(LCD.DEFAULT_WIDTH * Sizes.medium.getRatio()),
+										Math.round(LCD.DEFAULT_HEIGHT * Sizes.medium.getRatio())));
+							}
+						});
+						lcd.add(mediumLCD);
+						
+						JMenuItem largeLCD = new JMenuItem(Strings.LARGE);
+						largeLCD.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Simulator.eComps.add(new LCD(mouseLocation.x, mouseLocation.y, Math.round(LCD.DEFAULT_WIDTH * Sizes.large.getRatio()),
+										Math.round(LCD.DEFAULT_HEIGHT * Sizes.large.getRatio())));
+							}
+						});
+						lcd.add(largeLCD);
+					other.add(lcd);
+					
+					JMenu switches = new JMenu("Switch");
+						JMenuItem smallSwitch = new JMenuItem(Strings.SMALL);
+							smallSwitch.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									Simulator.eComps.add(new Switch(mouseLocation.x, mouseLocation.y, Math.round(Switch.DEFAULT_WIDTH * Sizes.small.getRatio()),
+											Math.round(Switch.DEFAULT_HEIGHT * Sizes.small.getRatio())));
+								}
+							});
+						switches.add(smallSwitch);
+						
+						JMenuItem medSwitch = new JMenuItem(Strings.MEDUIM);
+						medSwitch.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Simulator.eComps.add(new Switch(mouseLocation.x, mouseLocation.y, Math.round(Switch.DEFAULT_WIDTH * Sizes.medium.getRatio()),
+										Math.round(Switch.DEFAULT_HEIGHT * Sizes.medium.getRatio())));
+							}
+						});
+						switches.add(medSwitch);
+						
+						JMenuItem largeSwitch = new JMenuItem(Strings.LARGE);
+						largeSwitch.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Simulator.eComps.add(new Switch(mouseLocation.x, mouseLocation.y, Math.round(Switch.DEFAULT_WIDTH * Sizes.large.getRatio()),
+										Math.round(Switch.DEFAULT_HEIGHT * Sizes.large.getRatio())));
+							}
+						});
+						switches.add(largeSwitch);
+						
+					other.add(switches);
 			this.add(other);
 				
 				JMenuItem label = new JMenuItem("Create Label");

@@ -3,8 +3,14 @@ import java.awt.Rectangle;
 
 public class LCD extends Gate{
 
+	public static final int DEFAULT_WIDTH = 100, DEFAULT_HEIGHT = 100;
+	
 	public LCD(int x, int y) {
-		super(x, y, 100, 100, Gates.LCD, 1, 0);
+		super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, Gates.LCD, 1, 0);
+	}
+	
+	public LCD(int x, int y, int width, int height){
+		super(x, y, width, height, Gates.LCD, 1, 0);
 	}
 	
 	@Override

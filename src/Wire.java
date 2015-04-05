@@ -3,7 +3,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.Arrays;
 
 public class Wire extends EComponent {
 
@@ -51,10 +50,6 @@ public class Wire extends EComponent {
 		
 		g.drawLine(inputParent.getX(), inputParent.getY() + inputCenter, outputParent.getX() + outputParent.getWidth(),
 				outputParent.getY() + outputCenter);
-		
-		g.setColor(Color.orange);
-		g.drawString(Arrays.toString(inputs), x, y+20);
-		g.drawString(Arrays.toString(outputs), x, y+40);
 	}
 
 	@Override
