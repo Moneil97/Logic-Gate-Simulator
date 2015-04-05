@@ -1,96 +1,78 @@
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.ArrayList;
 
+public abstract class GateGroup extends EComponent {
+}
 
-public abstract class GateGroup extends EComponent{
+class HalfAdder extends Gate {
 
-	private Rectangle bounds;
-	protected ArrayList<Gate> gates = new ArrayList<Gate>();
+	public HalfAdder(int x, int y) {
+		this(x, y, 300, 150);
+	}
 
-	public GateGroup(int x, int y, int width, int height, int inputsAmount, int outputsAmount) {
-		super(x, y, width, height, inputsAmount, outputsAmount);
-		bounds = new Rectangle(x,y,width,height);
+	public HalfAdder(int x, int y, int width, int height) {
+		super(x, y, width, height, Gates.HALF_ADDER, 2, 2);
+	}
+
+	@Override
+	float[][] getBoundsRatios() {
+		return RatioGroups.HALF_ADDER_BOUNDS_RATIOS.getRatioGroup();
+	}
+
+	@Override
+	float[][] getHoverRatios() {
+		return RatioGroups.HALF_ADDER_HOVER_RATIOS.getRatioGroup();
+	}
+
+	@Override
+	void draw(Graphics2D g) {
+
+		g.drawImage(getAND() ? ImageTools.HALF_ADDER_IMAGES[3]
+				: (getXOR() ? (inputs[0].getState().getBoolean() ? ImageTools.HALF_ADDER_IMAGES[1] : ImageTools.HALF_ADDER_IMAGES[2])
+						: ImageTools.HALF_ADDER_IMAGES[0]), x, y, width, height, null);
+	}
+
+	@Override
+	States calculateState() {
+		System.err.println("Not used");
+		return null;
 	}
 
 	@Override
 	void update() {
-		
-	}
-	
-	@Override
-	public void translate(int xOff, int yOff) {
-		super.translate(xOff, yOff);
-		bounds.translate(xOff, yOff);
-		
-		for (Gate gate : gates)
-			gate.translate(xOff, yOff);
+		checkHover();
+		outputs[0].setState(States.toState(getXOR()));
+		outputs[1].setState(States.toState(getAND()));
 	}
 
-	@Override
-	boolean contains(Point p) {
-		return bounds.contains(p);
+	private boolean getAND() {
+		return inputs[0].getState().getBoolean() && inputs[1].getState().getBoolean();
+	}
+
+	private boolean getXOR() {
+		return inputs[0].getState().getBoolean() ^ inputs[1].getState().getBoolean();
 	}
 
 }
 
-class HalfAdder extends GateGroup{
-	
-	public HalfAdder(int x, int y) {
-		super(x,y,600 / 4, 360 / 4, 2,2);
-		
-		gates.add(new AND(x, y, 600 / 8, 360 / 8));
-		
+class FullAdder extends Gate {
+
+	public FullAdder(int x, int y, int width, int height) {
+		super(x, y, width, height, Gates.FULL_ADDER);
 	}
-	
+
 	@Override
-	void draw(Graphics2D g) {
-		
-		g.setColor(Color.blue);
-		g.drawRect(x, y, width, height);
-		g.setColor(new Color(0,0,1,.2f));
-		g.fillRect(x, y, width, height);
-		
-		for (Gate gate : gates)
-			gate.draw(g);
-		
-	}
-	
-	@Override
-	Rectangle[] getInputHovers() {
+	float[][] getBoundsRatios() {
 		return null;
 	}
 
 	@Override
-	Rectangle[] getOutputHovers() {
-		return null;
-	}
-	
-}
-
-class FullAdder extends GateGroup{
-	
-	public FullAdder(int x, int y) {
-		super(x,y,600 / 4, 360 / 4, 3,2);
-	}
-
-	@Override
-	void draw(Graphics2D g) {
-		
-	}
-	
-	@Override
-	Rectangle[] getInputHovers() {
+	float[][] getHoverRatios() {
 		return null;
 	}
 
 	@Override
-	Rectangle[] getOutputHovers() {
+	States calculateState() {
 		return null;
 	}
 
-	
-	
 }

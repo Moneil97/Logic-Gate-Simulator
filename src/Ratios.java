@@ -74,27 +74,50 @@ public enum Ratios {
 
 	XOR_GATE_OUTPUT_Y_RATIOS(new float[] { 0.42105263f, 0.42230576f, 0.57894737f, 0.57769424f }),
 
-	//Splitter
+	// Splitter
 	SPLITTER_GATE_INPUT_X_RATIOS(new float[] { 7.5075077E-4f, 0.253003f, 0.25375375f, 7.5075077E-4f }),
 
 	SPLITTER_GATE_INPUT_Y_RATIOS(new float[] { 0.41301626f, 0.41301626f, 0.58698374f, 0.58573216f }),
-	
-	SPLITTER_GATE_TOP_OUTPUT_X_RATIOS(new float[] { 0.5169903f, 1.0f, 1.0008091f, 0.51618123f}),
 
-	SPLITTER_GATE_TOP_OUTPUT_Y_RATIOS(new float[] { -0.08355795f, -0.08355795f, 0.08355795f, 0.08355795f}),
-	
-	SPLITTER_GATE_BOTTOM_OUTPUT_X_RATIOS(new float[] { 0.5169903f, 1.0f, 1.0008091f, 0.51618123f}),
+	SPLITTER_GATE_TOP_OUTPUT_X_RATIOS(new float[] { 0.5169903f, 1.0f, 1.0008091f, 0.51618123f }),
 
-	//SPLITTER_GATE_BOTTOM_OUTPUT_Y_RATIOS(new float[] { -0.08355795f, -0.08355795f, 0.08355795f, 0.08355795f});
+	SPLITTER_GATE_TOP_OUTPUT_Y_RATIOS(new float[] { -0.08355795f, -0.08355795f, 0.08355795f, 0.08355795f }),
 
-	HUB_BOUNDS_X_RATIOS(new float[] {0,1,1,0}),
-	
-	HUB_BOUNDS_Y_RATIOS(new float[] {0,0,1,1}),
-	
-	LCD_BOUNDS_X_RATIOS(new float[] {0,1,1,0}),
-	
-	LCD_BOUNDS_Y_RATIOS(new float[] {0,0,1,1});
-	
+	SPLITTER_GATE_BOTTOM_OUTPUT_X_RATIOS(new float[] { 0.5169903f, 1.0f, 1.0008091f, 0.51618123f }),
+
+	// SPLITTER_GATE_BOTTOM_OUTPUT_Y_RATIOS(new float[] { -0.08355795f,
+	// -0.08355795f, 0.08355795f, 0.08355795f});
+
+	HUB_BOUNDS_X_RATIOS(new float[] { 0, 1, 1, 0 }),
+
+	HUB_BOUNDS_Y_RATIOS(new float[] { 0, 0, 1, 1 }),
+
+	LCD_BOUNDS_X_RATIOS(new float[] { 0, 1, 1, 0 }),
+
+	LCD_BOUNDS_Y_RATIOS(new float[] { 0, 0, 1, 1 }),
+
+	HALF_ADDER_BOUNDS_X(new float[] { 0.15044248f, 0.8590878f, 0.8570456f, 0.15180396f }),
+
+	HALF_ADDER_BOUNDS_Y(new float[] { 0.0f, 0.0f, 1.0f, 1.0f }),
+
+	HALF_ADDER_INPUT_A_X_RATIOS(new float[] { 0.0f, 0.15112321f, 0.15180396f, 0.0f }),
+
+	HALF_ADDER_INPUT_A_Y_RATIOS(new float[] { 0.09386733f, 0.09386733f, 0.30413017f, 0.30538172f }),
+
+	HALF_ADDER_INPUT_B_X_RATIOS(new float[] { 0.0f, 0.15180396f, 0.15180396f, 0.0f }),
+
+	HALF_ADDER_INPUT_B_Y_RATIOS(new float[] { 0.65957445f, 0.660826f, 0.8698373f, 0.8685857f }),
+
+	HALF_ADDER_OUTPUT_S_X_RATIOS(new float[] { 0.8584071f, 1.0006807f, 0.99931926f, 0.85772634f }),
+
+	HALF_ADDER_OUTPUT_S_Y_RATIOS(new float[] { 0.17521903f, 0.17521903f, 0.3842303f, 0.38548186f }),
+
+	HALF_ADDER_OUTPUT_C_X_RATIOS(new float[] { 0.8584071f, 1.0006807f, 0.99931926f, 0.85772634f }),
+
+	HALF_ADDER_OUTPUT_C_Y_RATIOS(new float[] { 0.6195244f, 0.620776f, 0.82978725f, 0.83229035f }),
+
+	;
+
 	private float[] ratio;
 
 	private Ratios(float[] f) {
@@ -131,10 +154,18 @@ enum RatioGroups {
 			Ratios.XOR_GATE_OUTPUT_X_RATIOS.getRatio(), Ratios.XOR_GATE_OUTPUT_Y_RATIOS.getRatio() }),
 
 	XOR_GATE_BOUNDS_RATIOS(new float[][] { Ratios.XOR_GATE_BOUNDS_X_RATIOS.getRatio(), Ratios.XOR_GATE_BOUNDS_Y_RATIOS.getRatio() }),
-	
-	HUB_BOUNDS_RATIOS(new float[][] { Ratios.HUB_BOUNDS_X_RATIOS.getRatio(), Ratios.HUB_BOUNDS_Y_RATIOS.getRatio()}),
-	
-	LCD_BOUNDS_RATIOS(new float[][] { Ratios.LCD_BOUNDS_X_RATIOS.getRatio(), Ratios.LCD_BOUNDS_Y_RATIOS.getRatio()});
+
+	HALF_ADDER_HOVER_RATIOS(new float[][] { 
+			Ratios.HALF_ADDER_INPUT_A_X_RATIOS.getRatio(), Ratios.HALF_ADDER_INPUT_A_Y_RATIOS.getRatio(),
+			Ratios.HALF_ADDER_INPUT_B_X_RATIOS.getRatio(), Ratios.HALF_ADDER_INPUT_B_Y_RATIOS.getRatio(),
+			Ratios.HALF_ADDER_OUTPUT_S_X_RATIOS.getRatio(), Ratios.HALF_ADDER_OUTPUT_S_Y_RATIOS.getRatio(),
+			Ratios.HALF_ADDER_OUTPUT_C_X_RATIOS.getRatio(), Ratios.HALF_ADDER_OUTPUT_C_Y_RATIOS.getRatio() }),
+
+	HALF_ADDER_BOUNDS_RATIOS(new float[][] {Ratios.HALF_ADDER_BOUNDS_X.getRatio(), Ratios.HALF_ADDER_BOUNDS_Y.getRatio()}),
+
+	HUB_BOUNDS_RATIOS(new float[][] { Ratios.HUB_BOUNDS_X_RATIOS.getRatio(), Ratios.HUB_BOUNDS_Y_RATIOS.getRatio() }),
+
+	LCD_BOUNDS_RATIOS(new float[][] { Ratios.LCD_BOUNDS_X_RATIOS.getRatio(), Ratios.LCD_BOUNDS_Y_RATIOS.getRatio() });
 
 	private float[][] ratioGroup;
 
@@ -155,6 +186,8 @@ enum RatioGroups {
 			return NOT_GATE_HOVER_RATIOS.getRatioGroup();
 		if (type == Gates.XOR)
 			return XOR_GATE_HOVER_RATIOS.getRatioGroup();
+		if (type == Gates.HALF_ADDER)
+			return HALF_ADDER_HOVER_RATIOS.getRatioGroup();
 		if (type == Gates.HUB)
 			return HUB_BOUNDS_RATIOS.getRatioGroup();
 		if (type == Gates.LCD)

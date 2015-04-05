@@ -11,6 +11,7 @@ public class ImageTools {
 	private static final BufferedImage[] ORImages = new BufferedImage[4];
 	private static final BufferedImage[] NOTImages = new BufferedImage[2];
 	private static final BufferedImage[] XORImages = new BufferedImage[4];
+	public static final BufferedImage[] HALF_ADDER_IMAGES = new BufferedImage[4];
 	public static BufferedImage ON;
 	public static BufferedImage OFF;
 	//public static BufferedImage SPLITTER;
@@ -26,6 +27,14 @@ public class ImageTools {
 				ANDImages[counter] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/AND/AND" + s + "_Gate.png"));
 				ORImages[counter] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/OR/OR" + s + "_Gate.png"));
 				XORImages[counter++] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/XOR/XOR" + s + "_Gate.png"));
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		
+		counter = 0;
+		for (String s : new String[]{"1", "2", "3", "4"})
+			try{
+				HALF_ADDER_IMAGES[counter++] = ImageIO.read(ImageTools.class.getResourceAsStream("/images/HALF_ADDER/Half_Adder_" + s + ".png"));
 			}catch(Exception e){
 				e.printStackTrace();
 			}
