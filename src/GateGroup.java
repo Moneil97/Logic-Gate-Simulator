@@ -4,9 +4,11 @@ public abstract class GateGroup extends EComponent {
 }
 
 class HalfAdder extends Gate {
+	
+	public static final int DEFAULT_WIDTH = 300, DEFAULT_HEIGHT = 150;
 
 	public HalfAdder(int x, int y) {
-		this(x, y, 300, 150);
+		this(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
 	public HalfAdder(int x, int y, int width, int height) {

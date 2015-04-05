@@ -299,7 +299,7 @@ class NOT extends Gate {
 	}
 	
 	public NOT(int x, int y, int width, int height){
-		super(x,y,width,height, Gates.NOT);
+		super(x,y,width,height, Gates.NOT, 1, 1);
 	}
 
 	@Override

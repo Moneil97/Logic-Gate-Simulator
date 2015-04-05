@@ -431,8 +431,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		public CreateGateActionListener(Gates gate, Sizes size, Point location) {
 			this.type = gate;
 			this.location = location;
-			this.width = Math.round(Gate.DEFAULT_WIDTH * size.getRatio());
-			this.height = Math.round(Gate.DEFAULT_HEIGHT * size.getRatio());
+			this.width = Math.round((gate == Gates.HALF_ADDER ? HalfAdder.DEFAULT_WIDTH:Gate.DEFAULT_WIDTH) * size.getRatio());
+			this.height = Math.round((gate == Gates.HALF_ADDER ? HalfAdder.DEFAULT_HEIGHT:Gate.DEFAULT_HEIGHT) * size.getRatio());
 		}
 		
 		@Override
@@ -454,6 +454,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				case XOR:
 					eComps.add(new XOR(location.x,location.y,width,height));
 					break;
+				case HALF_ADDER:
+					eComps.add(new HalfAdder(location.x,location.y,width,height));
 				default:
 					System.err.println("Default Case!");
 					break;
@@ -485,38 +487,55 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 							largeAnd.addActionListener(new CreateGateActionListener(Gates.AND, Sizes.large, mouseLocation));
 							andGate.add(largeAnd);
 					gates.add(andGate);
-					JMenuItem orGate = new JMenuItem("OR Gate");
-						orGate.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								Simulator.eComps.add(new OR(mouseLocation.x, mouseLocation.y));
-							}
-						});
+					
+					JMenu orGate = new JMenu("OR Gate");
+						JMenuItem smallOr = new JMenuItem(Strings.SMALL);
+							smallOr.addActionListener(new CreateGateActionListener(Gates.OR, Sizes.small, mouseLocation));
+							orGate.add(smallOr);
+						JMenuItem mediumOr = new JMenuItem(Strings.MEDUIM);
+							mediumOr.addActionListener(new CreateGateActionListener(Gates.OR, Sizes.medium, mouseLocation));
+							orGate.add(mediumOr);
+						JMenuItem largeOr = new JMenuItem(Strings.LARGE);
+							largeOr.addActionListener(new CreateGateActionListener(Gates.OR, Sizes.large, mouseLocation));
+							orGate.add(largeOr);
 					gates.add(orGate);
-					JMenuItem xorGate = new JMenuItem("XOR Gate");
-						xorGate.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								Simulator.eComps.add(new XOR(mouseLocation.x, mouseLocation.y));
-							}
-						});
+					
+					JMenu xorGate = new JMenu("XOR Gate");
+						JMenuItem smallXor = new JMenuItem(Strings.SMALL);
+							smallXor.addActionListener(new CreateGateActionListener(Gates.XOR, Sizes.small, mouseLocation));
+							xorGate.add(smallXor);
+						JMenuItem mediumXor = new JMenuItem(Strings.MEDUIM);
+							mediumXor.addActionListener(new CreateGateActionListener(Gates.XOR, Sizes.medium, mouseLocation));
+							xorGate.add(mediumXor);
+						JMenuItem largeXor = new JMenuItem(Strings.LARGE);
+							largeXor.addActionListener(new CreateGateActionListener(Gates.XOR, Sizes.large, mouseLocation));
+							xorGate.add(largeXor);
 					gates.add(xorGate);
-					JMenuItem notGate = new JMenuItem("NOT Gate");
-						notGate.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								Simulator.eComps.add(new NOT(mouseLocation.x, mouseLocation.y));
-							}
-						});
+					
+					JMenu notGate = new JMenu("NOT Gate");
+						JMenuItem smallNot = new JMenuItem(Strings.SMALL);
+							smallNot.addActionListener(new CreateGateActionListener(Gates.NOT, Sizes.small, mouseLocation));
+							notGate.add(smallNot);
+						JMenuItem mediumNot = new JMenuItem(Strings.MEDUIM);
+							mediumNot.addActionListener(new CreateGateActionListener(Gates.NOT, Sizes.medium, mouseLocation));
+							notGate.add(mediumNot);
+						JMenuItem largeNot = new JMenuItem(Strings.LARGE);
+							largeNot.addActionListener(new CreateGateActionListener(Gates.NOT, Sizes.large, mouseLocation));
+							notGate.add(largeNot);
 					gates.add(notGate);
-					JMenuItem halfAdder = new JMenuItem("Half Adder");
-						halfAdder.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								Simulator.eComps.add(new HalfAdder(mouseLocation.x, mouseLocation.y));
-							}
-						});
+					
+					JMenu halfAdder = new JMenu("Half Adder");
+						JMenuItem smallHalfAdder = new JMenuItem(Strings.SMALL);
+							smallHalfAdder.addActionListener(new CreateGateActionListener(Gates.HALF_ADDER, Sizes.small, mouseLocation));
+							halfAdder.add(smallHalfAdder);
+						JMenuItem mediumHalfAdder = new JMenuItem(Strings.MEDUIM);
+							mediumHalfAdder.addActionListener(new CreateGateActionListener(Gates.HALF_ADDER, Sizes.medium, mouseLocation));
+							halfAdder.add(mediumHalfAdder);
+						JMenuItem largeHalfAdder = new JMenuItem(Strings.LARGE);
+							largeHalfAdder.addActionListener(new CreateGateActionListener(Gates.HALF_ADDER, Sizes.large, mouseLocation));
+							halfAdder.add(largeHalfAdder);
 					gates.add(halfAdder);
+					
 			this.add(gates);
 				JMenu other = new JMenu("Create Other: ");
 					JMenuItem lcd = new JMenuItem("LCD");
