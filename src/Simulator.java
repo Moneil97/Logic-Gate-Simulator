@@ -1,7 +1,10 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MenuItem;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -11,7 +14,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 @SuppressWarnings("serial")
 public class Simulator extends JFrame implements Runnable, MouseMotionListener, MouseListener, KeyListener {
@@ -25,6 +32,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	private Point mouseDraggedLast = new Point(0, 0);
 	private boolean dragged = false;
 	private ArrayList<Wire> wires = new ArrayList<Wire>();
+	private MyPopup popup;
 
 	public Simulator() {
 
@@ -46,7 +54,31 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			}
 		});
 		panel.setBackground(Color.white);
+		
+		popup = new MyPopup();
+		
+		class MyMenuBar extends JMenuBar{
+			
+			public MyMenuBar() {
+				
+				JMenu tools = new JMenu("Tools");
+					JMenuItem reset = new JMenuItem("Reset");
+					reset.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							reset();
+						}
+					});
+					tools.add(reset);
+				this.add(tools);
+				
+			}
 
+		}
+
+		this.setJMenuBar(new MyMenuBar());
+		
 		this.setSize(1000, 800);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -131,33 +163,52 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		
-		if (creator != null){
-			for (EComponent eComp : eComps){
-				if (eComp.getInputHovers() != null)
-					for (int i=0; i < eComp.getInputHovers().length; i++)
-						if (eComp.getInputHovers()[i].contains(mouse))
-							creator.setInputParent(eComp, i);
-				for (int i=0; i < eComp.getOutputHovers().length; i++)
-					if (eComp.getOutputHovers()[i].contains(mouse))
-						creator.setOutputParent(eComp, i);
+		if (e.getButton() == MouseEvent.BUTTON1){
+			if (creator != null){
+				for (EComponent eComp : eComps){
+					if (eComp.getInputHovers() != null)
+						for (int i=0; i < eComp.getInputHovers().length; i++)
+							if (eComp.getInputHovers()[i].contains(mouse))
+								creator.setInputParent(eComp, i);
+					for (int i=0; i < eComp.getOutputHovers().length; i++)
+						if (eComp.getOutputHovers()[i].contains(mouse))
+							creator.setOutputParent(eComp, i);
+				}
+				if (creator.inputParent != null && creator.outputParent != null){
+					wires.add(creator.create());
+					creator = null;
+				}
 			}
-			if (creator.inputParent != null && creator.outputParent != null){
-				wires.add(creator.create());
-				creator = null;
-			}
+			
+			for (EComponent eComp : eComps)
+				if (eComp.contains(e.getPoint())) {
+					eComp.setPickedUp(true);
+					break;
+				}
+			
+			for (UserLabel label : labels)
+				if (label.contains(e.getPoint())){
+					label.pickUp();
+					break;
+				}
+		}
+		else if (e.getButton() == MouseEvent.BUTTON3){
+			
+			for (EComponent eComp : eComps)
+				if (eComp.contains(e.getPoint())) {
+					popup.show(e.getComponent(), e.getX(), e.getY());
+					break;
+				}
+			
+			for (UserLabel label : labels)
+				if (label.contains(e.getPoint())){
+					label.doPopup(e.getComponent(), e.getX(), e.getY());
+					break;
+				}
+			
 		}
 		
-		for (EComponent eComp : eComps)
-			if (eComp.contains(e.getPoint())) {
-				eComp.setPickedUp(true);
-				break;
-			}
 		
-		for (UserLabel label : labels)
-			if (label.contains(e.getPoint())){
-				label.pickUp();
-				break;
-			}
 	}
 
 	@Override
@@ -338,9 +389,37 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				labelIter.remove();
 			}
 		}
+		
+	}
+	
+	/**
+	 * Deletes all eComps, wires, and labels
+	 */
+	
+	private void reset(){
+		eComps.clear();
+		wires.clear();
+		labels.clear();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {}
 
+	class MyPopup extends JPopupMenu{
+		
+		public MyPopup() {
+			
+				JMenuItem item = new JMenuItem("Do stuff");
+				item.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						say("something");
+					}
+				});
+			this.add(item);
+			
+		}
+		
+	}
+	
 }
