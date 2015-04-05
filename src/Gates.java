@@ -10,3 +10,19 @@ public enum Gates {
 		return null;
 	}
 }
+
+enum Sizes{
+	
+	small(.5f), medium(1), large(1.5f), custom(2);
+	
+	private float ratio;
+	
+	Sizes(float ratio){
+		this.ratio = ratio;
+	}
+
+	public float getRatio() {
+		return ratio;
+	}
+	
+}

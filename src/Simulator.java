@@ -422,55 +422,100 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	 * @author Cameron O'Neil
 	 */
 	
+	class CreateGateActionListener implements ActionListener{
+
+		private final int width, height;
+		private final Gates type;
+		private final Point location;
+		
+		public CreateGateActionListener(Gates gate, Sizes size, Point location) {
+			this.type = gate;
+			this.location = location;
+			this.width = Math.round(Gate.DEFAULT_WIDTH * size.getRatio());
+			this.height = Math.round(Gate.DEFAULT_HEIGHT * size.getRatio());
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			switch (type){
+				case AND:
+					say(eComps);
+					say(location);
+					say(width);
+					say(height);
+					eComps.add(new AND(location.x,location.y,width,height));
+					break;
+				case OR:
+					eComps.add(new OR(location.x,location.y,width,height));
+					break;
+				case NOT:
+					eComps.add(new NOT(location.x,location.y,width,height));
+					break;
+				case XOR:
+					eComps.add(new XOR(location.x,location.y,width,height));
+					break;
+				default:
+					System.err.println("Default Case!");
+					break;
+			
+			}
+		}
+		
+	}
+	
 	class DefaultPopup extends JPopupMenu{
 		
 		/**
-		 * Point stored to be used to place objects
+		 * Point stored to be used to place objects.
+		 * Is final since passed to CreateGateActionListener
 		 */
-		private Point p;
+		private final Point mouseLocation = new Point();
 		
 		public DefaultPopup() {
 			
 				JMenu gates = new JMenu("Create Gate: ");
-					JMenuItem andGate = new JMenuItem("AND Gate");
-					andGate.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Simulator.eComps.add(new AND(p.x, p.y));
-						}
-					});
+					JMenu andGate = new JMenu("AND Gate");
+						JMenuItem smallAnd = new JMenuItem(Strings.SMALL);
+							smallAnd.addActionListener(new CreateGateActionListener(Gates.AND, Sizes.small, mouseLocation));
+							andGate.add(smallAnd);
+						JMenuItem mediumAnd = new JMenuItem(Strings.MEDUIM);
+							mediumAnd.addActionListener(new CreateGateActionListener(Gates.AND, Sizes.medium, mouseLocation));
+							andGate.add(mediumAnd);
+						JMenuItem largeAnd = new JMenuItem(Strings.LARGE);
+							largeAnd.addActionListener(new CreateGateActionListener(Gates.AND, Sizes.large, mouseLocation));
+							andGate.add(largeAnd);
 					gates.add(andGate);
 					JMenuItem orGate = new JMenuItem("OR Gate");
-					orGate.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Simulator.eComps.add(new OR(p.x, p.y));
-						}
-					});
+						orGate.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Simulator.eComps.add(new OR(mouseLocation.x, mouseLocation.y));
+							}
+						});
 					gates.add(orGate);
 					JMenuItem xorGate = new JMenuItem("XOR Gate");
-					xorGate.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Simulator.eComps.add(new XOR(p.x, p.y));
-						}
-					});
+						xorGate.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Simulator.eComps.add(new XOR(mouseLocation.x, mouseLocation.y));
+							}
+						});
 					gates.add(xorGate);
 					JMenuItem notGate = new JMenuItem("NOT Gate");
-					notGate.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Simulator.eComps.add(new NOT(p.x, p.y));
-						}
-					});
+						notGate.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Simulator.eComps.add(new NOT(mouseLocation.x, mouseLocation.y));
+							}
+						});
 					gates.add(notGate);
 					JMenuItem halfAdder = new JMenuItem("Half Adder");
-					halfAdder.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Simulator.eComps.add(new HalfAdder(p.x, p.y));
-						}
-					});
+						halfAdder.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Simulator.eComps.add(new HalfAdder(mouseLocation.x, mouseLocation.y));
+							}
+						});
 					gates.add(halfAdder);
 			this.add(gates);
 				JMenu other = new JMenu("Create Other: ");
@@ -478,7 +523,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					lcd.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							Simulator.eComps.add(new LCD(p.x, p.y));
+							Simulator.eComps.add(new LCD(mouseLocation.x, mouseLocation.y));
 						}
 					});
 					other.add(lcd);
@@ -494,7 +539,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					onOff.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							Simulator.eComps.add(new Switch(p.x, p.y));
+							Simulator.eComps.add(new Switch(mouseLocation.x, mouseLocation.y));
 						}
 					});
 					other.add(onOff);
@@ -504,7 +549,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				label.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						Simulator.labels.add(new UserLabel(p.x, p.y));
+						Simulator.labels.add(new UserLabel(mouseLocation.x, mouseLocation.y));
 					}
 				});
 			this.add(label);
@@ -513,7 +558,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		
 		@Override
 		public void show(Component invoker, int x, int y) {
-			p = new Point(x,y);
+			mouseLocation.setLocation(x,y);
 			super.show(invoker, x, y);
 		}
 		

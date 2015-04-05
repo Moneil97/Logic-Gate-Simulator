@@ -17,6 +17,7 @@ public abstract class Gate extends EComponent {
 	private Polygon bounds;
 	protected Rectangle inputHovers[];
 	protected Rectangle outputHovers[];
+	public static final int DEFAULT_WIDTH = 600 / 4, DEFAULT_HEIGHT = 360 / 4;
 
 	/**
 	 * Create Gate with default size, 2 inputs, 1 output.
@@ -52,7 +53,7 @@ public abstract class Gate extends EComponent {
 	 */
 
 	public Gate(int x, int y, Gates type, int inputs, int outputs) {
-		this(x, y, 600 / 4, 360 / 4, type, inputs, outputs);
+		this(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, type, inputs, outputs);
 	}
 	
 	/**
@@ -239,10 +240,6 @@ class AND extends Gate {
 		return States.toState(inputs[0].getState().getBoolean() && inputs[1].getState().getBoolean());
 	}
 
-	public String toString() {
-		return "AND[" + ID + "]";
-	}
-
 	@Override
 	public float[][] getHoverRatios() {
 		return RatioGroups.AND_GATE_HOVER_RATIOS.getRatioGroup();
@@ -252,26 +249,29 @@ class AND extends Gate {
 	public float[][] getBoundsRatios() {
 		return RatioGroups.AND_GATE_BOUNDS_RATIOS.getRatioGroup();
 	}
+	
+	public String toString() {
+		return "AND[" + ID + "]";
+	}
 
 }
 
 class OR extends Gate {
 
 	public static int OR_Counter = 0;
-	final int ID;
+	final int ID = OR_Counter++;
 
 	public OR(int x, int y) {
 		super(x, y, Gates.OR);
-		ID = OR_Counter++;
+	}
+	
+	public OR(int x, int y, int width, int height){
+		super(x,y,width,height, Gates.OR);
 	}
 
 	@Override
 	States calculateState() {
 		return States.toState(inputs[0].getState().getBoolean() || inputs[1].getState().getBoolean());
-	}
-
-	public String toString() {
-		return "OR[" + ID + "]";
 	}
 
 	@Override
@@ -283,12 +283,23 @@ class OR extends Gate {
 	public float[][] getBoundsRatios() {
 		return RatioGroups.OR_GATE_BOUNDS_RATIOS.getRatioGroup();
 	}
+	
+	public String toString() {
+		return "OR[" + ID + "]";
+	}
 }
 
 class NOT extends Gate {
+	
+	public static int NOT_Counter = 0;
+	final int ID = NOT_Counter++;
 
 	public NOT(int x, int y) {
 		super(x, y, Gates.NOT, 1, 1);
+	}
+	
+	public NOT(int x, int y, int width, int height){
+		super(x,y,width,height, Gates.NOT);
 	}
 
 	@Override
@@ -305,12 +316,24 @@ class NOT extends Gate {
 	public float[][] getBoundsRatios() {
 		return RatioGroups.NOT_GATE_BOUNDS_RATIOS.getRatioGroup();
 	}
+	
+	public String toString() {
+		return "NOT[" + ID + "]";
+	}
 
 }
 
 class XOR extends Gate{
+	
+	public static int XOR_Counter = 0;
+	final int ID = XOR_Counter++;
+	
 	public XOR(int x, int y) {
 		super(x, y, Gates.XOR);
+	}
+	
+	public XOR(int x, int y, int width, int height){
+		super(x,y,width,height, Gates.XOR);
 	}
 	
 	@Override
@@ -328,5 +351,7 @@ class XOR extends Gate{
 		return RatioGroups.XOR_GATE_BOUNDS_RATIOS.getRatioGroup();
 	}
 
-	
+	public String toString() {
+		return "XOR[" + ID + "]";
+	}
 }
