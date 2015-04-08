@@ -48,7 +48,6 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		
 	};
 	
-	
 	SimpleAbstractButton close = new SimpleAbstractButton("Close", 300, 20, 60, 30, 20, 20, 20) {
 		
 		@Override

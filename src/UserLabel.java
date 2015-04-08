@@ -101,7 +101,9 @@ class LabelPopup extends JPopupMenu{
 			text.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					temp.setText(JOptionPane.showInputDialog("Change Text", temp.getText()));
+					String text = JOptionPane.showInputDialog("Change Text", temp.getText());
+					if (text != null)
+						temp.setText(text);
 					temp = null;
 				}
 			});
