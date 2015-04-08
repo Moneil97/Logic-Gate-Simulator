@@ -1,8 +1,11 @@
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,6 +13,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -17,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
@@ -33,6 +41,16 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	private boolean dragged = false;
 	protected static ArrayList<Wire> wires = new ArrayList<Wire>();
 	protected final DefaultPopup defaultPopup = new DefaultPopup();
+	private boolean menu = true;
+	private final SimpleAbstractButton begin = new SimpleAbstractButton("Begin", 420, 200, 100, 60, 20, 20){
+		
+		@Override
+		void onPress() {
+			menu = false;
+		}
+		
+	};
+	
 
 	public Simulator() {
 
@@ -43,14 +61,37 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			protected void paintComponent(Graphics g1) {
 				super.paintComponent(g1);
 				Graphics2D g = (Graphics2D) g1;
-				for (EComponent eComp : eComps)
-					eComp.draw(g);
-				for (Wire wire : wires)
-					wire.draw(g);
-				for (UserLabel label : labels)
-					label.draw(g);
-				if (creator != null)
-					creator.draw(g, mouse);
+				g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+				
+//				Center Line
+				g.drawLine(this.getWidth()/2, 0, this.getWidth()/2,  this.getHeight());
+				
+				if (menu){
+					
+					int xOff = 10;
+					begin.draw(g);
+					begin.setX(450-xOff);
+					begin.setY(230);
+					g.setFont(new Font("Arial", Font.PLAIN, 90));
+					int y = 80;
+					g.drawString("Logic Gate", 300-xOff, y);
+					g.drawString("Simulator", 320-xOff, y+80);
+					
+					g.setFont(new Font("Arial", Font.PLAIN, 50));
+					g.drawString("Cameron O'Neil", 330-xOff, y+130);
+					
+				}
+				else{
+					for (EComponent eComp : eComps)
+						eComp.draw(g);
+					for (Wire wire : wires)
+						wire.draw(g);
+					for (UserLabel label : labels)
+						label.draw(g);
+					if (creator != null)
+						creator.draw(g, mouse);
+				}
+				
 			}
 		});
 		panel.setBackground(Color.white);
@@ -59,8 +100,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			
 			public MyMenuBar() {
 				
-				JMenu tools = new JMenu("Tools");
-					JMenuItem reset = new JMenuItem("Clear");
+				JMenu file = new JMenu("File");
+					JMenuItem reset = new JMenuItem("Clear All");
 					reset.addActionListener(new ActionListener() {
 						
 						@Override
@@ -68,9 +109,25 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 							reset();
 						}
 					});
-					tools.add(reset);
-				this.add(tools);
-				
+					file.add(reset);
+					
+					JMenuItem source = new JMenuItem("Source Code");
+					source.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							try {
+								openLink(new URI("https://github.com/Moneil97/Logic-Gate-Simulator"));
+							} catch (Exception e1) {
+								JOptionPane.showInputDialog(panel,
+										"Could not load URL on system broswer\nPlease copy and paste this link instead",
+										"https://github.com/Moneil97/Logic-Gate-Simulator");
+							}
+						}
+						
+					});
+					file.add(source);
+				this.add(file);
 			}
 		}
 
@@ -105,12 +162,17 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	@Override
 	public void run() {
 		while (true) {
-
-			for (EComponent eComp : eComps)
-				eComp.update();
 			
-			for (Wire wire : wires)
-				wire.update();
+			if (menu){
+				begin.updateHover(mouse);
+			}
+			else{
+				for (EComponent eComp : eComps)
+					eComp.update();
+				
+				for (Wire wire : wires)
+					wire.update();
+			}
 
 			try {
 				Thread.sleep(1000 / ups);
@@ -120,6 +182,11 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 
 		}
 	}
+	
+	public static void openLink(URI uri) throws Exception {
+		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+			desktop.browse(uri);
+	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -127,16 +194,18 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		mouseDraggedLast.setLocation(mouse);
 		mouse.setLocation(e.getPoint());// = e.getPoint();
 		
-		int xOff = mouse.x - mouseDraggedLast.x;
-		int yOff = mouse.y - mouseDraggedLast.y;
-		
-		for (UserLabel label : labels)
-			if (label.isPickedUp())
-				label.translate(xOff, yOff);
-
-		for (EComponent eComp : eComps)
-			if (eComp.isPickedUp())
-				eComp.translate(xOff, yOff);
+		if (!menu){
+			int xOff = mouse.x - mouseDraggedLast.x;
+			int yOff = mouse.y - mouseDraggedLast.y;
+			
+			for (UserLabel label : labels)
+				if (label.isPickedUp())
+					label.translate(xOff, yOff);
+	
+			for (EComponent eComp : eComps)
+				if (eComp.isPickedUp())
+					eComp.translate(xOff, yOff);
+		}
 	}
 
 	@Override
@@ -158,53 +227,57 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		
-		if (e.getButton() == MouseEvent.BUTTON1){
-			if (creator != null){
-				for (EComponent eComp : eComps){
-					if (eComp.getInputHovers() != null)
-						for (int i=0; i < eComp.getInputHovers().length; i++)
-							if (eComp.getInputHovers()[i].contains(mouse))
-								creator.setInputParent(eComp, i);
-					for (int i=0; i < eComp.getOutputHovers().length; i++)
-						if (eComp.getOutputHovers()[i].contains(mouse))
-							creator.setOutputParent(eComp, i);
+		if (menu){
+			begin.updatePressed(e.getPoint());
+		}
+		else{
+			if (e.getButton() == MouseEvent.BUTTON1){
+				if (creator != null){
+					for (EComponent eComp : eComps){
+						if (eComp.getInputHovers() != null)
+							for (int i=0; i < eComp.getInputHovers().length; i++)
+								if (eComp.getInputHovers()[i].contains(mouse))
+									creator.setInputParent(eComp, i);
+						for (int i=0; i < eComp.getOutputHovers().length; i++)
+							if (eComp.getOutputHovers()[i].contains(mouse))
+								creator.setOutputParent(eComp, i);
+					}
+					if (creator.inputParent != null && creator.outputParent != null){
+						wires.add(creator.create());
+						creator = null;
+					}
 				}
-				if (creator.inputParent != null && creator.outputParent != null){
-					wires.add(creator.create());
-					creator = null;
-				}
+				
+				for (EComponent eComp : eComps)
+					if (eComp.contains(e.getPoint())) {
+						eComp.setPickedUp(true);
+						break;
+					}
+				
+				for (UserLabel label : labels)
+					if (label.contains(e.getPoint())){
+						label.pickUp();
+						break;
+					}
 			}
-			
-			for (EComponent eComp : eComps)
-				if (eComp.contains(e.getPoint())) {
-					eComp.setPickedUp(true);
-					break;
-				}
-			
-			for (UserLabel label : labels)
-				if (label.contains(e.getPoint())){
-					label.pickUp();
-					break;
-				}
+			else if (e.getButton() == MouseEvent.BUTTON3){
+				
+				for (EComponent eComp : eComps)
+					if (eComp.contains(e.getPoint())) {
+						eComp.doPopup(e.getComponent(), e.getX(), e.getY());
+						return;
+					}
+				
+				for (UserLabel label : labels)
+					if (label.contains(e.getPoint())){
+						label.doPopup(e.getComponent(), e.getX(), e.getY());
+						return;
+					}
+				
+				defaultPopup.show(e.getComponent(), e.getX(), e.getY());
+				
+			}
 		}
-		else if (e.getButton() == MouseEvent.BUTTON3){
-			
-			for (EComponent eComp : eComps)
-				if (eComp.contains(e.getPoint())) {
-					eComp.doPopup(e.getComponent(), e.getX(), e.getY());
-					return;
-				}
-			
-			for (UserLabel label : labels)
-				if (label.contains(e.getPoint())){
-					label.doPopup(e.getComponent(), e.getX(), e.getY());
-					return;
-				}
-			
-			defaultPopup.show(e.getComponent(), e.getX(), e.getY());
-			
-		}
-		
 		
 	}
 
