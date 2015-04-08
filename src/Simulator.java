@@ -39,7 +39,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 	protected static ArrayList<Wire> wires = new ArrayList<Wire>();
 	protected final DefaultPopup defaultPopup = new DefaultPopup();
 	private boolean menu = true;
-	private final SimpleAbstractButton begin = new SimpleAbstractButton("Begin", 420, 200, 100, 60, 20, 20){
+	private final SimpleAbstractButton begin = new SimpleAbstractButton("Begin", 440, 230, 100, 60, 20, 20,30){
 		
 		@Override
 		void onPress() {
@@ -48,6 +48,14 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		
 	};
 	
+	
+	SimpleAbstractButton close = new SimpleAbstractButton("Close", 300, 20, 60, 30, 20, 20, 20) {
+		
+		@Override
+		void onPress() {
+			help = false;
+		}
+	};
 
 	public Simulator() {
 
@@ -67,8 +75,6 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					
 					int xOff = 10;
 					begin.draw(g);
-					begin.setX(450-xOff);
-					begin.setY(230);
 					g.setFont(new Font("Arial", Font.PLAIN, 90));
 					int y = 80;
 					g.drawString("Logic Gate", 300-xOff, y);
@@ -79,6 +85,19 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					
 				}
 				else{
+					
+					if (help){
+						g.setColor(new Color(0,0,0,.3f));
+						g.fillRect(40, 15, 330, 100);
+						g.setColor(Color.black);
+						g.setFont(new Font("Arial", Font.PLAIN, 20));
+						int y = 50, x = 50;
+						g.drawString("Need Help?", x, y);
+						g.drawString("Try right clicking in the white", x, y+20);
+						g.drawString("Help and Examples are under File", x, y+40);
+						close.draw(g);
+					}
+					
 					for (EComponent eComp : eComps)
 						eComp.draw(g);
 					for (Wire wire : wires)
@@ -124,6 +143,40 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 						
 					});
 					file.add(source);
+					
+					JMenuItem examples = new JMenuItem("Example");
+					examples.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							try {
+								openLink(new URI("https://github.com/Moneil97/Logic-Gate-Simulator/tree/master/Example"));
+							} catch (Exception e1) {
+								JOptionPane.showInputDialog(panel,
+										"Could not load URL on system broswer\nPlease copy and paste this link instead",
+										"https://github.com/Moneil97/Logic-Gate-Simulator/tree/master/Example");
+							}
+						}
+						
+					});
+					file.add(examples);
+					
+					JMenuItem help = new JMenuItem("Help");
+					help.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							try {
+								openLink(new URI("https://github.com/Moneil97/Logic-Gate-Simulator/blob/master/README.md"));
+							} catch (Exception e1) {
+								JOptionPane.showInputDialog(panel,
+										"Could not load URL on system broswer\nPlease copy and paste this link instead",
+										"https://github.com/Moneil97/Logic-Gate-Simulator/blob/master/README.md");
+							}
+						}
+						
+					});
+					file.add(help);
 				this.add(file);
 			}
 		}
@@ -155,6 +208,8 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 			}
 		}).start();
 	}
+	
+	boolean help = true;
 
 	@Override
 	public void run() {
@@ -164,6 +219,11 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				begin.updateHover(mouse);
 			}
 			else{
+				
+				if (help){
+					close.updateHover(mouse);
+				}
+				
 				for (EComponent eComp : eComps)
 					eComp.update();
 				
@@ -229,6 +289,11 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 		}
 		else{
 			if (e.getButton() == MouseEvent.BUTTON1){
+				
+				if (help){
+					close.updatePressed(e.getPoint());
+				}
+				
 				if (creator != null){
 					for (EComponent eComp : eComps){
 						if (eComp.getInputHovers() != null)
@@ -245,7 +310,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					}
 				}
 				
-				//Reverse Order so objects on top are picked up first if colliding
+				//Reverse Order so objects on top are picked up first if overlapping
 				for (int i = eComps.size()-1; i >= 0; i--){
 					if (eComps.get(i).contains(e.getPoint())) {
 						eComps.get(i).setPickedUp(true);
