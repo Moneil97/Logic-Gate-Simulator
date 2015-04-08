@@ -1,5 +1,6 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -41,9 +42,10 @@ public class Wire extends EComponent {
 		outputs[0].setState(inputs[0].getState());
 		//say("      " + inputs[0] + "(" + inputs[0].getOut() + ")   -->  " + outputs[0] + "(" + outputs[0].getState());
 	}
-
+	
 	@Override
 	void draw(Graphics2D g) {
+		
 		g.setStroke(new BasicStroke(5));
 		
 		g.setColor(outputs[0].getState().getBoolean() ?  Color.yellow: Color.black);
@@ -131,14 +133,22 @@ class WireCreator {
 	
 	public void draw(Graphics2D g, Point mouse){
 		
+		g.setColor(Color.blue);
+		g.setFont(new Font("arial", Font.PLAIN, 30));
+		
 		if (inputParent != null){
+			g.drawString("Select an Output", 380, 40);
 			g.setStroke(new BasicStroke(5));
 			g.setColor(Color.black);
 			g.drawLine(inputParent.getX(), inputParent.getY() + centerInput, mouse.x, mouse.y);
 		}else if (outputParent!= null){
+			g.drawString("Select an Input", 390, 40);
 			g.setStroke(new BasicStroke(5));
 			g.setColor(outputParent.outputs[0].getState().getBoolean() ?  Color.yellow: Color.black);
 			g.drawLine(outputParent.getX() + outputParent.getWidth(), outputParent.getY() + centerOutput, mouse.x, mouse.y);
+		}
+		else{
+			g.drawString("Select an Input or Output", 320, 40);
 		}
 
 	}
