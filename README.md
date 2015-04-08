@@ -2,6 +2,8 @@
 
 To run the program:
 
+	Make sure you have the latest version of Java (Java 8) to run this program. It will not work with Java 7 or below
+
   A.
   
     1. Download ZIP
