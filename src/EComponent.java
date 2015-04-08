@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -45,8 +44,8 @@ public abstract class EComponent {
 		this.outputs = new Output[outputsAmount];
 		for (int i = 0; i < outputsAmount; i++)
 			this.outputs[i] = new Output();
-		say(Arrays.toString(this.inputs));
-		say(Arrays.toString(this.outputs));
+		//say(Arrays.toString(this.inputs));
+		//say(Arrays.toString(this.outputs));
 
 	}
 	
@@ -251,7 +250,7 @@ class EComponentPopup extends JPopupMenu{
 				}
 			});
 		this.add(reSize);
-			JMenuItem font = new JMenuItem("Remove Wires");
+			JMenuItem font = new JMenuItem("Remove All Connections");
 			font.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {

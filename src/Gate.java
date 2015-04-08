@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 public abstract class Gate extends EComponent {
 
@@ -137,8 +136,8 @@ public abstract class Gate extends EComponent {
 				g.draw(outputHovers[j]);
 		
 		g.setColor(Color.blue);
-		g.drawString(Arrays.toString(inputs), x,y);
-		g.drawString(Arrays.toString(outputs), x+width/2, y+height);
+		//g.drawString(Arrays.toString(inputs), x,y);
+		//g.drawString(Arrays.toString(outputs), x+width/2, y+height);
 	}
 	
 	@Override
