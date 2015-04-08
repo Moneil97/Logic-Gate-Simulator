@@ -17,6 +17,7 @@ To run the program:
 
 
 Help:
+
 	Right click anywhere there is not already a componet to get the main creation menu, from here you can create any of the available components. You can create either a small, medium, or large version of that object
 	
 	Right click on a component to get that component's customized edit menu. This included things such as removing connections, deleting, resizing, changing fonts and text of labels, etc.
@@ -26,5 +27,6 @@ Help:
 	You can have multiple wires leading to one input and multiple wires leaving one output. If you have multiple connections, just having one connection on will override the rest, so for it to be off, every single connection must be off.
 	
 LCD:
+
 	This has an input and no outputs. If any connected input is on, it will display a 1. If all the connections are off (or there are no connections) it will display a zero. This correlates with binary (1 == ON, 0 == OFF).
 	
