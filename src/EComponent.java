@@ -237,11 +237,12 @@ class EComponentPopup extends JPopupMenu{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try{
-						String[] options = JOptionPane.showInputDialog("width height", temp.getWidth() + " " + temp.getHeight()).split(" ");
+						String[] options = JOptionPane.showInputDialog("Input new size:\nwidth height", temp.getWidth() + " " + temp.getHeight()).split(" ");
 						temp.setSize(Integer.parseInt(options[0]), Integer.parseInt(options[1]));
 					}
 					catch(Exception error){
 						System.err.println(error.getMessage());
+						JOptionPane.showMessageDialog(null, "Invalid size, size will remain unchanged.");
 					}
 					finally{
 						temp = null;
