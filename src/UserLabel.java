@@ -39,7 +39,7 @@ public class UserLabel {
 		g.setColor(Color.black);
 		g.setFont(font);
 		g.drawString(text, x, y);
-		g.draw(bounds);
+		//g.draw(bounds);
 	}
 	
 	public void translate(int xOff, int yOff){
@@ -115,6 +115,9 @@ class LabelPopup extends JPopupMenu{
 						temp.setFont(new Font(options[0], Font.PLAIN, Integer.parseInt(options[1])));
 						temp = null;
 					}catch(Exception error){
+						
+						JOptionPane.showMessageDialog(null, "Invalid Font.\nFont will not change");
+						
 						error.printStackTrace();
 					}
 				}
