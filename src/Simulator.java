@@ -13,10 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -64,7 +61,7 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 				g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 				
 //				Center Line
-				g.drawLine(this.getWidth()/2, 0, this.getWidth()/2,  this.getHeight());
+				//g.drawLine(this.getWidth()/2, 0, this.getWidth()/2,  this.getHeight());
 				
 				if (menu){
 					
@@ -248,11 +245,13 @@ public class Simulator extends JFrame implements Runnable, MouseMotionListener, 
 					}
 				}
 				
-				for (EComponent eComp : eComps)
-					if (eComp.contains(e.getPoint())) {
-						eComp.setPickedUp(true);
+				//Reverse Order so objects on top are picked up first if colliding
+				for (int i = eComps.size()-1; i >= 0; i--){
+					if (eComps.get(i).contains(e.getPoint())) {
+						eComps.get(i).setPickedUp(true);
 						break;
 					}
+				}
 				
 				for (UserLabel label : labels)
 					if (label.contains(e.getPoint())){
