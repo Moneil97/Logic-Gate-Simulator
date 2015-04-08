@@ -21,10 +21,10 @@ public abstract class SimpleAbstractButton {
 	private boolean forceHilight = false;
 
 	public SimpleAbstractButton(String text, int x, int y, int width, int height) {
-		this(text, x, y, width, height, 0, 0);
+		this(text, x, y, width, height, 0, 0, 30);
 	}
 
-	public SimpleAbstractButton(String text, int x, int y, int width, int height, int arcWidth, int arcHeight) {
+	public SimpleAbstractButton(String text, int x, int y, int width, int height, int arcWidth, int arcHeight, int fontSize) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -32,6 +32,7 @@ public abstract class SimpleAbstractButton {
 		this.text = text;
 		this.arcWidth = arcWidth;
 		this.arcHeight = arcHeight;
+		font = new Font("arial", Font.BOLD, fontSize);
 
 		rekt = new Rectangle(x, y, width, height);
 	}
